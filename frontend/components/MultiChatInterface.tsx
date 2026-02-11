@@ -547,6 +547,19 @@ export function MultiChatInterface({
         </Button>
       )}
 
+      {/* Desktop Itinerary Toggle - Show when panel is closed */}
+      {hasItinerary && !showItinerary && (
+        <Button
+          variant='ghost'
+          size='icon'
+          className='hidden lg:flex fixed top-1/2 right-4 -translate-y-1/2 z-30 bg-white dark:bg-card shadow-lg rounded-xl border border-border hover:shadow-xl transition-all'
+          onClick={() => setShowItinerary(true)}
+          title='Mở lịch trình'
+        >
+          <Calendar className='h-5 w-5 text-[#0066FF]' />
+        </Button>
+      )}
+
       {/* Chat Panel */}
       <div className='flex-1 flex flex-col bg-background overflow-hidden min-h-0'>
         {/* Messages Area */}

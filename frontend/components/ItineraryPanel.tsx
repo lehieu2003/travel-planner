@@ -11,6 +11,7 @@ import {
   Map,
   DollarSign,
   Navigation,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -139,12 +140,23 @@ export function ItineraryPanel({
           <MapPin className='w-5 h-5 text-[#0066FF]' />
           <h3>Lịch trình gợi ý cho bạn</h3>
         </div>
-        <button
-          onClick={onClose}
-          className='lg:hidden p-2 hover:bg-accent rounded-lg transition-colors'
-        >
-          <X className='w-5 h-5' />
-        </button>
+        <div className='flex items-center gap-1'>
+          {/* Desktop close button */}
+          <button
+            onClick={onClose}
+            className='hidden lg:flex p-2 hover:bg-accent dark:hover:bg-muted rounded-lg transition-colors group'
+            title='Thu gọn'
+          >
+            <ChevronRight className='w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors' />
+          </button>
+          {/* Mobile close button */}
+          <button
+            onClick={onClose}
+            className='lg:hidden p-2 hover:bg-accent dark:hover:bg-muted rounded-lg transition-colors'
+          >
+            <X className='w-5 h-5' />
+          </button>
+        </div>
       </div>
 
       {/* Content */}
