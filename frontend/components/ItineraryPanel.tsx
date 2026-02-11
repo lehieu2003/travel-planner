@@ -134,7 +134,7 @@ export function ItineraryPanel({
   return (
     <div className='h-full flex flex-col'>
       {/* Header */}
-      <div className='border-b border-border p-4 flex items-center justify-between bg-white sticky top-0 z-10'>
+      <div className='border-b border-border p-4 flex items-center justify-between bg-white dark:bg-card sticky top-0 z-10'>
         <div className='flex items-center gap-2'>
           <MapPin className='w-5 h-5 text-[#0066FF]' />
           <h3>Lịch trình gợi ý cho bạn</h3>
@@ -158,7 +158,7 @@ export function ItineraryPanel({
           {/* Duration and Budget Cards */}
           <div className='flex flex-wrap gap-2'>
             {/* Duration Card */}
-            <div className='bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50 flex items-center gap-2 flex-1 min-w-[140px]'>
+            <div className='bg-white dark:bg-card rounded-lg px-3 py-2 shadow-sm border border-border/50 flex items-center gap-2 flex-1 min-w-[140px]'>
               <div className='w-8 h-8 rounded-lg bg-[#0066FF]/10 flex items-center justify-center flex-shrink-0'>
                 <Clock className='w-4 h-4 text-[#0066FF]' />
               </div>
@@ -173,7 +173,7 @@ export function ItineraryPanel({
             </div>
 
             {/* Budget Card */}
-            <div className='bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50 flex items-center gap-2 flex-1 min-w-[140px]'>
+            <div className='bg-white dark:bg-card rounded-lg px-3 py-2 shadow-sm border border-border/50 flex items-center gap-2 flex-1 min-w-[140px]'>
               <div className='w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0'>
                 <DollarSign className='w-4 h-4 text-amber-600' />
               </div>
@@ -211,7 +211,7 @@ export function ItineraryPanel({
                 day.activities.map((activity) => (
                   <div
                     key={activity.id}
-                    className='bg-white rounded-xl border border-border p-4 hover:shadow-md transition-shadow'
+                    className='bg-white dark:bg-card rounded-xl border border-border p-4 hover:shadow-md transition-shadow'
                   >
                     <div className='flex items-start gap-3'>
                       <div className='w-10 h-10 rounded-xl bg-[#00C29A]/10 text-[#00C29A] flex items-center justify-center flex-shrink-0'>
@@ -279,7 +279,7 @@ export function ItineraryPanel({
         {itineraryData.hotel && (
           <div className='border-t border-border pt-6'>
             <h3 className='mb-3'>🏨 Khách sạn gợi ý</h3>
-            <div className='bg-white rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-shadow'>
+            <div className='bg-white dark:bg-card rounded-2xl border border-border overflow-hidden hover:shadow-lg transition-shadow'>
               {itineraryData.hotel.image && (
                 <div className='aspect-video relative'>
                   <ImageWithFallback
@@ -312,7 +312,7 @@ export function ItineraryPanel({
         )}
 
         {/* Action Buttons */}
-        <div className='sticky bottom-0 bg-white pt-4 pb-2 border-t border-border -mx-4 sm:-mx-6 px-4 sm:px-6 space-y-2'>
+        <div className='sticky bottom-0 bg-white dark:bg-card pt-4 pb-2 border-t border-border -mx-4 sm:-mx-6 px-4 sm:px-6 space-y-2'>
           {/* Primary Save Button */}
           <Button
             onClick={handleSave}

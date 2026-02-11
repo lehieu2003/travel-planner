@@ -18,7 +18,9 @@ import {
   Activity,
   Zap,
   DollarSign,
+  Sun,
 } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -137,6 +139,7 @@ const ENERGY_LABELS = {
 };
 
 export function Profile() {
+  const { theme, toggleTheme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -342,7 +345,7 @@ export function Profile() {
 
   if (isLoading) {
     return (
-      <div className='p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] min-h-screen flex items-center justify-center'>
+      <div className='p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] dark:bg-[#0f172a] min-h-screen flex items-center justify-center'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-[#0066FF] mx-auto mb-4'></div>
           <p className='text-muted-foreground'>Đang tải thông tin hồ sơ...</p>
@@ -353,9 +356,9 @@ export function Profile() {
 
   if (error && !profileData) {
     return (
-      <div className='p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] min-h-screen flex items-center justify-center'>
+      <div className='p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] dark:bg-[#0f172a] min-h-screen flex items-center justify-center'>
         <div className='text-center'>
-          <p className='text-red-600 mb-4'>{error}</p>
+          <p className='text-red-600 dark:text-red-400 mb-4'>{error}</p>
           <Button onClick={() => window.location.reload()}>Thử lại</Button>
         </div>
       </div>
@@ -371,24 +374,26 @@ export function Profile() {
   };
 
   return (
-    <div className='p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] min-h-screen'>
+    <div className='p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] dark:bg-[#0f172a] min-h-screen'>
       <div className='max-w-4xl mx-auto space-y-6'>
         {/* Header */}
         <div>
-          <h2 className='mb-2'>Hồ sơ cá nhân & Sở thích du lịch</h2>
+          <h2 className='mb-2 dark:text-foreground'>
+            Hồ sơ cá nhân & Sở thích du lịch
+          </h2>
           <p className='text-muted-foreground'>
             Quản lý thông tin cá nhân và sở thích du lịch
           </p>
         </div>
 
         {error && (
-          <div className='p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm'>
+          <div className='p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm'>
             {error}
           </div>
         )}
 
         {/* User Info Card */}
-        <div className='bg-white rounded-2xl shadow-sm p-6'>
+        <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
           <div className='flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6'>
             <Avatar className='w-24 h-24'>
               <AvatarImage src={avatar} />
@@ -477,8 +482,8 @@ export function Profile() {
         </div>
 
         {/* Personal Info Card */}
-        <div className='bg-white rounded-2xl shadow-sm p-6'>
-          <h3 className='mb-4'>Thông tin cá nhân</h3>
+        <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
+          <h3 className='mb-4 dark:text-foreground'>Thông tin cá nhân</h3>
 
           <div className='grid sm:grid-cols-2 gap-6'>
             {/* Age */}
@@ -488,7 +493,7 @@ export function Profile() {
                 Tuổi
               </Label>
               {!isEditing ? (
-                <div className='h-11 px-4 rounded-xl bg-gray-50 flex items-center'>
+                <div className='h-11 px-4 rounded-xl bg-gray-50 dark:bg-muted flex items-center'>
                   {age ? `${age} tuổi` : '-'}
                 </div>
               ) : (
@@ -510,7 +515,7 @@ export function Profile() {
                 Giới tính
               </Label>
               {!isEditing ? (
-                <div className='h-11 px-4 rounded-xl bg-gray-50 flex items-center'>
+                <div className='h-11 px-4 rounded-xl bg-gray-50 dark:bg-muted flex items-center'>
                   {gender ? GENDER_LABELS[gender] : '-'}
                 </div>
               ) : (
@@ -559,7 +564,7 @@ export function Profile() {
                 Mức năng lượng
               </Label>
               {!isEditing ? (
-                <div className='h-11 px-4 rounded-xl bg-gray-50 flex items-center'>
+                <div className='h-11 px-4 rounded-xl bg-gray-50 dark:bg-muted flex items-center'>
                   {energyLevel ? ENERGY_LABELS[energyLevel] : '-'}
                 </div>
               ) : (
@@ -604,13 +609,13 @@ export function Profile() {
         </div>
 
         {/* Budget Range Card */}
-        <div className='bg-white rounded-2xl shadow-sm p-6'>
+        <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
           <Label className='mb-4 flex items-center gap-2'>
             <DollarSign className='w-4 h-4 text-[#0066FF]' />
             Phạm vi ngân sách
           </Label>
 
-          <div className='bg-gray-50 rounded-xl p-4 mb-3'>
+          <div className='bg-gray-50 dark:bg-muted rounded-xl p-4 mb-3'>
             <div className='text-center mb-4'>
               <span className='text-[#0066FF]'>
                 {budgetRange[0]} - {budgetRange[1]} triệu VND
@@ -638,10 +643,10 @@ export function Profile() {
         </div>
 
         {/* Travel Preferences Card */}
-        <div className='bg-white rounded-2xl shadow-sm p-6'>
+        <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
           <div className='flex items-center justify-between mb-6'>
             <div>
-              <h3 className='mb-1'>Sở thích du lịch</h3>
+              <h3 className='mb-1 dark:text-foreground'>Sở thích du lịch</h3>
               <p className='text-muted-foreground'>
                 {isEditing
                   ? 'Chọn những gì bạn yêu thích'
@@ -687,9 +692,50 @@ export function Profile() {
           </div>
         </div>
 
+        {/* Appearance Settings */}
+        <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
+          <h3 className='mb-4 dark:text-foreground'>Giao diện</h3>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              {theme === 'dark' ? (
+                <Moon className='w-5 h-5 text-[#0066FF]' />
+              ) : (
+                <Sun className='w-5 h-5 text-[#0066FF]' />
+              )}
+              <div>
+                <p className='font-medium'>
+                  Chế độ {theme === 'dark' ? 'tối' : 'sáng'}
+                </p>
+                <p className='text-sm text-muted-foreground'>
+                  Chuyển đổi giữa chế độ sáng và tối
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={toggleTheme}
+              className='relative inline-flex h-11 w-20 items-center rounded-full bg-gray-200 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'
+              aria-label='Toggle theme'
+            >
+              <span
+                className={`inline-block h-9 w-9 transform rounded-full bg-white transition-transform ${
+                  theme === 'dark' ? 'translate-x-10' : 'translate-x-1'
+                }`}
+              >
+                {theme === 'dark' ? (
+                  <Moon className='w-5 h-5 m-2 text-[#0066FF]' />
+                ) : (
+                  <Sun className='w-5 h-5 m-2 text-[#0066FF]' />
+                )}
+              </span>
+            </button>
+          </div>
+        </div>
+
         {/* Travel History */}
-        <div className='bg-white rounded-2xl shadow-sm p-6'>
-          <h3 className='mb-4'>Lịch sử tìm kiếm gần đây</h3>
+        <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
+          <h3 className='mb-4 dark:text-foreground'>
+            Lịch sử tìm kiếm gần đây
+          </h3>
           {isLoadingConversations ? (
             <div className='text-center py-8 text-muted-foreground'>
               Đang tải...
@@ -715,25 +761,6 @@ export function Profile() {
               Chưa có lịch sử tìm kiếm
             </div>
           )}
-        </div>
-
-        {/* Personalization Tips */}
-        <div className='bg-gradient-to-br from-[#0066FF]/10 to-[#00C29A]/10 rounded-2xl p-6'>
-          <h4 className='mb-3'>💡 Mẹo cá nhân hóa</h4>
-          <ul className='space-y-2 text-muted-foreground'>
-            <li className='flex gap-2'>
-              <span>•</span>
-              <span>Chat nhiều hơn để AI hiểu rõ sở thích của bạn</span>
-            </li>
-            <li className='flex gap-2'>
-              <span>•</span>
-              <span>Đánh giá các gợi ý để cải thiện độ chính xác</span>
-            </li>
-            <li className='flex gap-2'>
-              <span>•</span>
-              <span>Cập nhật sở thích khi có thay đổi</span>
-            </li>
-          </ul>
         </div>
       </div>
     </div>

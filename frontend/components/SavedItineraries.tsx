@@ -79,7 +79,10 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      return date.toLocaleDateString('vi-VN', { day: 'numeric', month: 'long' });
+      return date.toLocaleDateString('vi-VN', {
+        day: 'numeric',
+        month: 'long',
+      });
     } catch {
       return dateStr;
     }
@@ -101,11 +104,17 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
   const getTags = (itinerary: SavedItinerary): string[] => {
     const tags: string[] = [];
     if (itinerary.payload.days) {
-      itinerary.payload.days.forEach(day => {
+      itinerary.payload.days.forEach((day) => {
         day.activities?.forEach((activity: any) => {
-          if ((activity.icon === 'coffee' || activity.icon === 'drink') && !tags.includes('Cafe')) tags.push('Cafe');
-          if (activity.icon === 'food' && !tags.includes('Food')) tags.push('Food');
-          if (activity.icon === 'nature' && !tags.includes('Nature')) tags.push('Nature');
+          if (
+            (activity.icon === 'coffee' || activity.icon === 'drink') &&
+            !tags.includes('Cafe')
+          )
+            tags.push('Cafe');
+          if (activity.icon === 'food' && !tags.includes('Food'))
+            tags.push('Food');
+          if (activity.icon === 'nature' && !tags.includes('Nature'))
+            tags.push('Nature');
         });
       });
     }
@@ -123,11 +132,11 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
 
   if (isLoading) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
-        <div className="flex items-center justify-center py-16">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Đang tải lịch trình...</p>
+      <div className='p-4 sm:p-6 lg:p-8'>
+        <div className='flex items-center justify-center py-16'>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
+            <p className='text-muted-foreground'>Đang tải lịch trình...</p>
           </div>
         </div>
       </div>
@@ -136,10 +145,13 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
 
   if (error) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8">
-        <div className="text-center py-16">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={loadItineraries} className="bg-[#0066FF] hover:bg-[#0052CC] rounded-xl">
+      <div className='p-4 sm:p-6 lg:p-8'>
+        <div className='text-center py-16'>
+          <p className='text-red-600 mb-4'>{error}</p>
+          <Button
+            onClick={loadItineraries}
+            className='bg-[#0066FF] hover:bg-[#0052CC] rounded-xl'
+          >
             Thử lại
           </Button>
         </div>
@@ -147,7 +159,7 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
     );
   }
 
-  const SAVED_TRIPS = itineraries.map(it => ({
+  const SAVED_TRIPS = itineraries.map((it) => ({
     id: it.id.toString(),
     title: it.title,
     destination: it.payload.destination,
@@ -158,74 +170,74 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
     tags: getTags(it),
   }));
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mb-6">
-        <h2 className="mb-2">Lịch trình đã lưu</h2>
-        <p className="text-muted-foreground">
+    <div className='p-4 sm:p-6 lg:p-8'>
+      <div className='mb-6'>
+        <h2 className='mb-2'>Lịch trình đã lưu</h2>
+        <p className='text-muted-foreground'>
           Quản lý các chuyến du lịch bạn đã lên kế hoạch
         </p>
       </div>
 
       {SAVED_TRIPS.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="w-20 h-20 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
-            <Calendar className="w-10 h-10 text-muted-foreground" />
+        <div className='text-center py-16'>
+          <div className='w-20 h-20 mx-auto mb-4 bg-muted dark:bg-muted rounded-full flex items-center justify-center'>
+            <Calendar className='w-10 h-10 text-muted-foreground' />
           </div>
-          <h3 className="mb-2">Chưa có lịch trình nào</h3>
-          <p className="text-muted-foreground mb-4">
+          <h3 className='mb-2'>Chưa có lịch trình nào</h3>
+          <p className='text-muted-foreground mb-4'>
             Bắt đầu chat với AI để tạo lịch trình du lịch đầu tiên
           </p>
-          <Button className="bg-[#0066FF] hover:bg-[#0052CC] rounded-xl">
+          <Button className='bg-[#0066FF] hover:bg-[#0052CC] rounded-xl'>
             Tạo lịch trình mới
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6'>
           {SAVED_TRIPS.map((trip) => (
             <div
               key={trip.id}
-              className="bg-white rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-300 group"
+              className='bg-white dark:bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-300 group'
             >
               {/* Image */}
-              <div className="aspect-[4/3] relative overflow-hidden">
+              <div className='aspect-[4/3] relative overflow-hidden'>
                 <ImageWithFallback
                   src={trip.image}
                   alt={trip.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
                 />
-                <div className="absolute top-3 right-3">
-                  <Badge className="bg-white/90 text-foreground backdrop-blur-sm">
+                <div className='absolute top-3 right-3'>
+                  <Badge className='bg-white/90 dark:bg-card/90 text-foreground backdrop-blur-sm'>
                     {trip.duration}
                   </Badge>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-4">
-                <h3 className="mb-2">{trip.title}</h3>
-                
-                <div className="space-y-2 mb-4 text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 flex-shrink-0" />
+              <div className='p-4'>
+                <h3 className='mb-2'>{trip.title}</h3>
+
+                <div className='space-y-2 mb-4 text-muted-foreground'>
+                  <div className='flex items-center gap-2'>
+                    <MapPin className='w-4 h-4 flex-shrink-0' />
                     <span>{trip.destination}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 flex-shrink-0" />
+                  <div className='flex items-center gap-2'>
+                    <Calendar className='w-4 h-4 flex-shrink-0' />
                     <span>{trip.dates}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 flex-shrink-0" />
-                    <span className="text-[#0066FF]">{trip.budget}</span>
+                  <div className='flex items-center gap-2'>
+                    <Clock className='w-4 h-4 flex-shrink-0' />
+                    <span className='text-[#0066FF]'>{trip.budget}</span>
                   </div>
                 </div>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className='flex flex-wrap gap-1.5 mb-4'>
                   {trip.tags.map((tag) => (
                     <Badge
                       key={tag}
-                      variant="secondary"
-                      className="bg-[#0066FF]/10 text-[#0066FF] border-0"
+                      variant='secondary'
+                      className='bg-[#0066FF]/10 text-[#0066FF] border-0'
                     >
                       {tag}
                     </Badge>
@@ -234,7 +246,7 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
 
                 {/* Action Button */}
                 <Button
-                  className="w-full rounded-xl bg-[#0066FF] hover:bg-[#0052CC]"
+                  className='w-full rounded-xl bg-[#0066FF] hover:bg-[#0052CC]'
                   onClick={() => onViewDetail?.(trip.id)}
                 >
                   Xem chi tiết
