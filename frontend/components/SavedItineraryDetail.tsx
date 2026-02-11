@@ -525,29 +525,9 @@ export function SavedItineraryDetail({
       {/* Header */}
       <div className='bg-white dark:bg-card border-b border-border sticky top-0 z-10'>
         <div className='max-w-7xl mx-auto p-4 sm:p-6'>
-          <button
-            onClick={onBack}
-            className='flex items-center gap-2 text-muted-foreground hover:text-foreground mb-4 transition-colors'
-          >
-            <ArrowLeft className='w-4 h-4' />
-            Quay lại danh sách
-          </button>
-
           <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4'>
             <div>
               <h1 className='mb-2'>{itinerary.title}</h1>
-              <div className='flex flex-wrap items-center gap-3 text-muted-foreground'>
-                <span className='flex items-center gap-1.5'>
-                  <Calendar className='w-4 h-4' />
-                  {tripDates}
-                </span>
-                <span>•</span>
-                <span>
-                  {totalDays} ngày {totalNights > 0 ? `${totalNights} đêm` : ''}
-                </span>
-                <span>•</span>
-                <span className='text-sm'>Tạo ngày {dateCreated}</span>
-              </div>
             </div>
 
             {/* Action Buttons */}

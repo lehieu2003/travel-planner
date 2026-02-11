@@ -206,7 +206,7 @@ export function SavedItineraries({ onViewDetail }: SavedItinerariesProps) {
                   className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
                 />
                 <div className='absolute top-3 right-3'>
-                  <Badge className='bg-white/90 dark:bg-card/90 text-foreground backdrop-blur-sm'>
+                  <Badge className='bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white backdrop-blur-sm'>
                     {trip.duration}
                   </Badge>
                 </div>

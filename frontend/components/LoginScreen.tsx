@@ -14,6 +14,8 @@ import {
   MapPin,
   ArrowLeft,
   Check,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -106,6 +108,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Step 2 fields
   const [age, setAge] = useState('');
@@ -302,7 +305,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                 placeholder='Nguyễn Văn A'
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className='h-11 rounded-xl'
+                className='h-11 rounded-xl dark:bg-gray-800 dark:text-white dark:border-gray-700'
               />
             </div>
           </div>
@@ -318,7 +321,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
               placeholder='your@email.com'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className='pl-10 h-11 rounded-xl'
+              className='pl-10 h-11 rounded-xl dark:bg-gray-800 dark:text-white dark:border-gray-700'
               required
             />
           </div>
@@ -330,13 +333,24 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
             <Lock className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground' />
             <Input
               id='password'
-              type='password'
+              type={showPassword ? 'text' : 'password'}
               placeholder='••••••••'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='pl-10 h-11 rounded-xl'
+              className='pl-10 pr-10 h-11 rounded-xl dark:bg-gray-800 dark:text-white dark:border-gray-700'
               required
             />
+            <button
+              type='button'
+              onClick={() => setShowPassword(!showPassword)}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+            >
+              {showPassword ? (
+                <EyeOff className='w-5 h-5' />
+              ) : (
+                <Eye className='w-5 h-5' />
+              )}
+            </button>
           </div>
         </div>
 
@@ -430,7 +444,7 @@ export function LoginScreen({ onLogin }: LoginScreenProps) {
                       placeholder='25'
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
-                      className='mt-1.5 h-11 rounded-xl'
+                      className='mt-1.5 h-11 rounded-xl dark:bg-gray-800 dark:text-white dark:border-gray-700'
                       min='1'
                       max='120'
                     />
