@@ -1,4 +1,12 @@
 import { useState, useEffect } from 'react';
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+  useParams,
+} from 'react-router-dom';
 import { LoginScreen } from './components/LoginScreen';
 import { MainLayout } from './components/MainLayout';
 import { MultiChatInterface } from './components/MultiChatInterface';
@@ -10,21 +18,17 @@ import { Toaster } from './components/ui/sonner';
 
 type Tab = 'chat' | 'itineraries' | 'profile';
 
-export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [activeTab, setActiveTab] = useState<Tab>('chat');
-  const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(
-    null,
-  );
+// Protected Route Component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const navigate = useNavigate();
 
-  // Kiểm tra authentication khi app khởi động
   useEffect(() => {
     const checkAuth = async () => {
       const token = getAuthToken();
       if (!token) {
-        setIsCheckingAuth(false);
         setIsLoggedIn(false);
+        navigate('/login', { replace: true });
         return;
       }
 
@@ -43,45 +47,19 @@ export default function App() {
           // Token không hợp lệ, xóa và yêu cầu đăng nhập lại
           removeAuthToken();
           setIsLoggedIn(false);
+          navigate('/login', { replace: true });
         }
       } catch (error) {
         console.error('Error verifying token:', error);
         // Nếu có lỗi mạng, vẫn cho phép sử dụng token tạm thời
         setIsLoggedIn(true);
-      } finally {
-        setIsCheckingAuth(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [navigate]);
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    removeAuthToken();
-    setIsLoggedIn(false);
-    setActiveTab('chat');
-    setSelectedItineraryId(null);
-  };
-
-  const handleTabChange = (tab: Tab) => {
-    setActiveTab(tab);
-    setSelectedItineraryId(null);
-  };
-
-  const handleViewItineraryDetail = (tripId: string) => {
-    setSelectedItineraryId(tripId);
-  };
-
-  const handleBackToItineraries = () => {
-    setSelectedItineraryId(null);
-  };
-
-  // Hiển thị loading khi đang kiểm tra authentication
-  if (isCheckingAuth) {
+  if (isLoggedIn === null) {
     return (
       <div className='min-h-screen flex items-center justify-center'>
         <div className='text-center'>
@@ -92,46 +70,128 @@ export default function App() {
     );
   }
 
-  if (!isLoggedIn) {
-    return <LoginScreen onLogin={handleLogin} />;
-  }
+  return isLoggedIn ? <>{children}</> : null;
+}
 
-  // Use MultiChatInterface for chat view
-  if (activeTab === 'chat') {
-    return (
-      <>
-        <MultiChatInterface
-          onNavigate={handleTabChange}
-          onLogout={handleLogout}
-        />
-        <Toaster />
-      </>
-    );
-  }
+// Wrapper for Itinerary Detail to use useParams
+function ItineraryDetailRoute() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-  // Show itinerary detail if one is selected
-  if (activeTab === 'itineraries' && selectedItineraryId) {
-    return (
-      <SavedItineraryDetail
-        itineraryId={selectedItineraryId}
-        onBack={handleBackToItineraries}
-      />
-    );
-  }
+  return (
+    <SavedItineraryDetail
+      itineraryId={id || ''}
+      onBack={() => navigate('/itineraries')}
+    />
+  );
+}
 
-  // Use MainLayout for other views
+export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogin = () => {
+    navigate('/chat');
+  };
+
+  const handleLogout = () => {
+    removeAuthToken();
+    navigate('/login');
+  };
+
+  const handleTabChange = (tab: Tab) => {
+    navigate(`/${tab}`);
+  };
+
+  const handleViewItineraryDetail = (tripId: string) => {
+    navigate(`/itineraries/${tripId}`);
+  };
+
+  const handleBackToItineraries = () => {
+    navigate('/itineraries');
+  };
+
+  // Determine active tab from current path
+  const getActiveTab = (): Tab => {
+    const path = location.pathname;
+    if (path.startsWith('/itineraries')) return 'itineraries';
+    if (path.startsWith('/profile')) return 'profile';
+    return 'chat';
+  };
+
   return (
     <>
-      <MainLayout
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        onLogout={handleLogout}
-      >
-        {activeTab === 'itineraries' && (
-          <SavedItineraries onViewDetail={handleViewItineraryDetail} />
-        )}
-        {activeTab === 'profile' && <Profile />}
-      </MainLayout>
+      <Routes>
+        {/* Public Routes */}
+        <Route path='/login' element={<LoginScreen onLogin={handleLogin} />} />
+
+        {/* Protected Routes */}
+        <Route
+          path='/chat'
+          element={
+            <ProtectedRoute>
+              <MultiChatInterface
+                onNavigate={handleTabChange}
+                onLogout={handleLogout}
+              />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/itineraries'
+          element={
+            <ProtectedRoute>
+              <MainLayout
+                activeTab='itineraries'
+                onTabChange={handleTabChange}
+                onLogout={handleLogout}
+              >
+                <SavedItineraries onViewDetail={handleViewItineraryDetail} />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/itineraries/:id'
+          element={
+            <ProtectedRoute>
+              <ItineraryDetailRoute />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/profile'
+          element={
+            <ProtectedRoute>
+              <MainLayout
+                activeTab='profile'
+                onTabChange={handleTabChange}
+                onLogout={handleLogout}
+              >
+                <Profile />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Default Redirect */}
+        <Route
+          path='/'
+          element={
+            getAuthToken() ? (
+              <Navigate to='/chat' replace />
+            ) : (
+              <Navigate to='/login' replace />
+            )
+          }
+        />
+
+        {/* Catch all - redirect to home */}
+        <Route path='*' element={<Navigate to='/' replace />} />
+      </Routes>
       <Toaster />
     </>
   );
