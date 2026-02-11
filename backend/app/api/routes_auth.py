@@ -49,7 +49,6 @@ class MeOut(BaseModel):
     id: int
     email: EmailStr
     full_name: Optional[str]
-    is_admin: bool
 
 
 # --------------------------
@@ -112,7 +111,7 @@ def me(authorization: Optional[str] = Header(None)):
         raise HTTPException(401, "Invalid token")
 
     cur = db.conn.cursor()
-    cur.execute("SELECT id, email, full_name, is_admin FROM users WHERE id = ?", (user_id,))
+    cur.execute("SELECT id, email, full_name FROM users WHERE id = ?", (user_id,))
     row = cur.fetchone()
     if not row:
         raise HTTPException(404, "User not found")
@@ -121,5 +120,4 @@ def me(authorization: Optional[str] = Header(None)):
         "id": row["id"],
         "email": row["email"],
         "full_name": row["full_name"],
-        "is_admin": bool(row["is_admin"]),
     }
