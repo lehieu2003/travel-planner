@@ -15,7 +15,9 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>('chat');
-  const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(null);
+  const [selectedItineraryId, setSelectedItineraryId] = useState<string | null>(
+    null,
+  );
 
   // Kiểm tra authentication khi app khởi động
   useEffect(() => {
@@ -23,25 +25,30 @@ export default function App() {
       const token = getAuthToken();
       if (!token) {
         setIsCheckingAuth(false);
+        setIsLoggedIn(false);
         return;
       }
 
       try {
+        // Verify token với backend
         const response = await fetch(API_ENDPOINTS.AUTH.ME, {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         });
 
         if (response.ok) {
           setIsLoggedIn(true);
         } else {
-          // Token không hợp lệ, xóa token
+          // Token không hợp lệ, xóa và yêu cầu đăng nhập lại
           removeAuthToken();
+          setIsLoggedIn(false);
         }
       } catch (error) {
-        // Lỗi network hoặc server, xóa token
-        removeAuthToken();
+        console.error('Error verifying token:', error);
+        // Nếu có lỗi mạng, vẫn cho phép sử dụng token tạm thời
+        setIsLoggedIn(true);
       } finally {
         setIsCheckingAuth(false);
       }
@@ -77,10 +84,10 @@ export default function App() {
   // Hiển thị loading khi đang kiểm tra authentication
   if (isCheckingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Đang kiểm tra đăng nhập...</p>
+      <div className='min-h-screen flex items-center justify-center'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
+          <p className='text-muted-foreground'>Đang kiểm tra đăng nhập...</p>
         </div>
       </div>
     );
@@ -105,9 +112,13 @@ export default function App() {
 
   // Show itinerary detail if one is selected
   if (activeTab === 'itineraries' && selectedItineraryId) {
-    return <SavedItineraryDetail itineraryId={selectedItineraryId} onBack={handleBackToItineraries} />;
+    return (
+      <SavedItineraryDetail
+        itineraryId={selectedItineraryId}
+        onBack={handleBackToItineraries}
+      />
+    );
   }
-
 
   // Use MainLayout for other views
   return (
@@ -117,7 +128,9 @@ export default function App() {
         onTabChange={handleTabChange}
         onLogout={handleLogout}
       >
-        {activeTab === 'itineraries' && <SavedItineraries onViewDetail={handleViewItineraryDetail} />}
+        {activeTab === 'itineraries' && (
+          <SavedItineraries onViewDetail={handleViewItineraryDetail} />
+        )}
         {activeTab === 'profile' && <Profile />}
       </MainLayout>
       <Toaster />
