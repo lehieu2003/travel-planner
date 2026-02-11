@@ -7,7 +7,6 @@ import { SavedItineraryDetail } from './components/SavedItineraryDetail';
 import { Profile } from './components/Profile';
 import { getAuthToken, removeAuthToken, API_ENDPOINTS } from './config/api';
 import { Toaster } from './components/ui/sonner';
-import './styles/globals.css';
 
 type Tab = 'chat' | 'itineraries' | 'profile';
 

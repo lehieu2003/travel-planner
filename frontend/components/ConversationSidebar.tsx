@@ -74,7 +74,7 @@ export function ConversationSidebar({
       {/* Header with Title and New Chat Button */}
       <div className='p-4 border-b border-border flex-shrink-0 space-y-3'>
         <h1 className='text-lg font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent text-center'>
-          Travel Planner GPT
+          Travel Planner Chatbot
         </h1>
         <Button
           onClick={onNewConversation}

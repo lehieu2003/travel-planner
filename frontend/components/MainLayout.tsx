@@ -73,7 +73,7 @@ export function MainLayout({
                   <Plane className='w-5 h-5 text-white' />
                 </div>
                 <span className='hidden sm:block text-[#0066FF]'>
-                  Travel Planner GPT
+                  Travel Planner Chatbot
                 </span>
               </div>
             </div>

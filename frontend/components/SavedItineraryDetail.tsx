@@ -435,7 +435,7 @@ export function SavedItineraryDetail({
 
   if (isLoading) {
     return (
-      <div className='min-h-screen bg-[#F8FAFC] flex items-center justify-center'>
+      <div className='min-h-screen bg-[#F8FAFC] dark:bg-background flex items-center justify-center'>
         <div className='text-center'>
           <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
           <p className='text-muted-foreground'>Đang tải lịch trình...</p>
@@ -446,8 +446,8 @@ export function SavedItineraryDetail({
 
   if (error || !itinerary) {
     return (
-      <div className='min-h-screen bg-[#F8FAFC]'>
-        <div className='bg-white border-b border-border sticky top-0 z-10'>
+      <div className='min-h-screen bg-[#F8FAFC] dark:bg-background'>
+        <div className='bg-white dark:bg-card border-b border-border sticky top-0 z-10'>
           <div className='max-w-7xl mx-auto p-4 sm:p-6'>
             <button
               onClick={onBack}
@@ -459,7 +459,7 @@ export function SavedItineraryDetail({
           </div>
         </div>
         <div className='max-w-7xl mx-auto p-4 sm:p-6'>
-          <div className='bg-white rounded-2xl shadow-sm p-8 text-center'>
+          <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-8 text-center'>
             <p className='text-lg text-muted-foreground'>
               {error || 'Không tìm thấy lịch trình.'}
             </p>
@@ -521,9 +521,9 @@ export function SavedItineraryDetail({
   };
 
   return (
-    <div className='min-h-screen bg-[#F8FAFC]'>
+    <div className='min-h-screen bg-[#F8FAFC] dark:bg-background'>
       {/* Header */}
-      <div className='bg-white border-b border-border sticky top-0 z-10'>
+      <div className='bg-white dark:bg-card border-b border-border sticky top-0 z-10'>
         <div className='max-w-7xl mx-auto p-4 sm:p-6'>
           <button
             onClick={onBack}
@@ -555,7 +555,7 @@ export function SavedItineraryDetail({
               <Button
                 onClick={handleDelete}
                 variant='outline'
-                className='rounded-xl text-red-600 hover:bg-red-50 border-red-200'
+                className='rounded-xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 border-red-200 dark:border-red-800'
               >
                 <Trash2 className='w-4 h-4 mr-2' />
                 Xóa
@@ -571,7 +571,7 @@ export function SavedItineraryDetail({
           {/* Main Content - Left Side */}
           <div className='lg:col-span-2 space-y-6'>
             {/* Summary Card */}
-            <div className='bg-white rounded-2xl shadow-sm p-6'>
+            <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
               <h3 className='mb-4'>Tổng quan chuyến đi</h3>
 
               <div className='grid sm:grid-cols-2 gap-6 mb-6'>
@@ -669,7 +669,7 @@ export function SavedItineraryDetail({
                           {categorizedPlaces.places.map((place, index) => (
                             <div
                               key={index}
-                              className='bg-gray-50 rounded-lg p-4'
+                              className='bg-gray-50 dark:bg-muted rounded-lg p-4'
                             >
                               <p className='font-semibold mb-1'>{place.name}</p>
                               {place.description && (
@@ -700,7 +700,7 @@ export function SavedItineraryDetail({
                           {categorizedPlaces.food.map((place, index) => (
                             <div
                               key={index}
-                              className='bg-gray-50 rounded-lg p-4'
+                              className='bg-gray-50 dark:bg-muted rounded-lg p-4'
                             >
                               <p className='font-semibold mb-1'>{place.name}</p>
                               {place.description && (
@@ -745,7 +745,7 @@ export function SavedItineraryDetail({
                         })().map((place, index) => (
                           <div
                             key={index}
-                            className='bg-gray-50 rounded-lg p-4'
+                            className='bg-gray-50 dark:bg-muted rounded-lg p-4'
                           >
                             <p className='font-semibold mb-1'>{place.name}</p>
                             {place.description && (
@@ -772,7 +772,7 @@ export function SavedItineraryDetail({
               payload.days.map((day) => (
                 <div
                   key={day.day}
-                  className='bg-white rounded-2xl shadow-sm p-6'
+                  className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'
                 >
                   {/* Day Header */}
                   <div className='flex items-center gap-4 mb-6'>
@@ -866,7 +866,7 @@ export function SavedItineraryDetail({
                             className='relative pl-8'
                           >
                             {/* Timeline Dot */}
-                            <div className='absolute left-[-4px] top-6 w-2.5 h-2.5 rounded-full bg-[#0066FF] ring-4 ring-white' />
+                            <div className='absolute left-[-4px] top-6 w-2.5 h-2.5 rounded-full bg-[#0066FF] ring-4 ring-white dark:ring-card' />
 
                             {/* Travel Time Badge - Show between activities */}
                             {/* Show travelTimeToNext from previous activity, or travelTime if it's the first activity */}
@@ -912,7 +912,7 @@ export function SavedItineraryDetail({
 
                               return (
                                 <div className='mb-3 flex items-center justify-center'>
-                                  <div className='flex items-center gap-2 text-sm bg-[#0066FF]/5 text-[#0066FF] px-3 py-1.5 rounded-lg border border-[#0066FF]/10'>
+                                  <div className='flex items-center gap-2 text-sm bg-[#0066FF]/5 dark:bg-[#0066FF]/10 text-[#0066FF] px-3 py-1.5 rounded-lg border border-[#0066FF]/10 dark:border-[#0066FF]/20'>
                                     <Navigation className='w-3.5 h-3.5' />
                                     <span>{travelTimeToDisplay}</span>
                                     <span>•</span>
@@ -925,7 +925,7 @@ export function SavedItineraryDetail({
                             })()}
 
                             {/* Activity Card */}
-                            <div className='bg-gray-50 rounded-xl p-5 hover:shadow-md transition-shadow border border-gray-100'>
+                            <div className='bg-gray-50 dark:bg-muted rounded-xl p-5 hover:shadow-md transition-shadow border border-gray-100 dark:border-border'>
                               <div className='flex items-start gap-4 mb-4'>
                                 {/* Category Icon */}
                                 <div
@@ -1031,7 +1031,7 @@ export function SavedItineraryDetail({
           {/* Sidebar - Right Side */}
           <div className='space-y-6'>
             {/* Map Preview */}
-            <div className='bg-white rounded-2xl shadow-sm p-6 sticky top-24'>
+            <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6 sticky top-24'>
               <h3 className='mb-4 flex items-center gap-2'>
                 <MapPin className='w-5 h-5 text-[#0066FF]' />
                 Bản đồ lịch trình
@@ -1074,7 +1074,7 @@ export function SavedItineraryDetail({
             </div>
 
             {/* Budget Info */}
-            <div className='bg-white rounded-2xl shadow-sm p-6'>
+            <div className='bg-white dark:bg-card rounded-2xl shadow-sm p-6'>
               <h3 className='mb-4 flex items-center gap-2'>
                 <DollarSign className='w-5 h-5 text-green-600' />
                 Ngân sách

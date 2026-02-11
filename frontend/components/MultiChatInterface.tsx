@@ -559,7 +559,7 @@ export function MultiChatInterface({
             ) : messages.length === 0 && !activeConversationId ? (
               <div className='flex flex-col items-center justify-center h-full text-center'>
                 <p className='text-muted-foreground mb-4'>
-                  Chào mừng đến với Travel Planner GPT! 👋
+                  Chào mừng đến với Travel Planner Chatbot! 👋
                 </p>
                 <p className='text-muted-foreground mb-6'>
                   Hãy tạo cuộc trò chuyện mới để bắt đầu lên kế hoạch du lịch
