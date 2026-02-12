@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, MessageSquare, Trash2 } from 'lucide-react-native';
 import { API_ENDPOINTS, getAuthHeaders } from '@/config/api';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface Conversation {
   id: string;
@@ -31,6 +32,7 @@ export function ConversationList({
   currentConversationId,
   onSelectConversation,
 }: ConversationListProps) {
+  const { colors } = useTheme();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -127,14 +129,6 @@ export function ConversationList({
     }
   };
 
-  // Log render state
-  console.log(
-    '🎭 [ConversationList] Render - isLoading:',
-    isLoading,
-    'conversations:',
-    conversations.length,
-  );
-
   return (
     <Modal
       visible={visible}
@@ -142,27 +136,43 @@ export function ConversationList({
       presentationStyle='pageSheet'
       onRequestClose={onClose}
     >
-      <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
-        <View className='flex-row items-center justify-between px-4 py-4 bg-white border-b border-slate-200'>
-          <Text className='text-xl font-bold text-slate-900'>
+      <SafeAreaView
+        className='flex-1'
+        edges={['top']}
+        style={{ backgroundColor: colors.background }}
+      >
+        <View
+          className='flex-row items-center justify-between px-4 py-4 border-b'
+          style={{ backgroundColor: colors.card, borderColor: colors.border }}
+        >
+          <Text
+            className='text-xl font-bold'
+            style={{ color: colors.foreground }}
+          >
             Cuộc trò chuyện
           </Text>
           <TouchableOpacity onPress={onClose}>
-            <X size={24} color='#64748B' />
+            <X size={24} color={colors.mutedForeground} />
           </TouchableOpacity>
         </View>
 
         {isLoading ? (
           <View className='flex-1 items-center justify-center'>
-            <ActivityIndicator size='large' color='#0066FF' />
+            <ActivityIndicator size='large' color={colors.primary} />
           </View>
         ) : conversations.length === 0 ? (
           <View className='flex-1 items-center justify-center p-8'>
-            <MessageSquare size={48} color='#CBD5E1' />
-            <Text className='text-lg font-semibold text-slate-900 mt-4 mb-2'>
+            <MessageSquare size={48} color={colors.mutedForeground} />
+            <Text
+              className='text-lg font-semibold mt-4 mb-2'
+              style={{ color: colors.foreground }}
+            >
               Chưa có cuộc trò chuyện nào
             </Text>
-            <Text className='text-sm text-slate-600 text-center'>
+            <Text
+              className='text-sm text-center'
+              style={{ color: colors.mutedForeground }}
+            >
               Bắt đầu trò chuyện mới để lên kế hoạch du lịch
             </Text>
           </View>
@@ -172,11 +182,16 @@ export function ConversationList({
               {conversations.map((conversation) => (
                 <View
                   key={conversation.id}
-                  className={`bg-white rounded-2xl border mb-3 ${
-                    currentConversationId === conversation.id
-                      ? 'border-blue-600'
-                      : 'border-slate-200'
-                  }`}
+                  className='rounded-2xl border mb-3'
+                  style={{
+                    backgroundColor: colors.card,
+                    borderColor:
+                      currentConversationId === conversation.id
+                        ? colors.primary
+                        : colors.border,
+                    borderWidth:
+                      currentConversationId === conversation.id ? 2 : 1,
+                  }}
                 >
                   <TouchableOpacity
                     onPress={() => {
@@ -186,21 +201,26 @@ export function ConversationList({
                     className='p-4 pr-12'
                   >
                     <Text
-                      className='text-base font-semibold text-slate-900 mb-1'
+                      className='text-base font-semibold mb-1'
                       numberOfLines={2}
+                      style={{ color: colors.foreground }}
                     >
                       {conversation.title}
                     </Text>
-                    <Text className='text-xs text-slate-500'>
+                    <Text
+                      className='text-xs'
+                      style={{ color: colors.mutedForeground }}
+                    >
                       {formatDate(conversation.updated_at)}
                     </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     onPress={() => handleDelete(conversation)}
-                    className='absolute top-4 right-4 w-8 h-8 rounded-full bg-red-50 items-center justify-center'
+                    className='absolute top-4 right-4 w-8 h-8 rounded-full items-center justify-center'
+                    style={{ backgroundColor: `${colors.destructive}20` }}
                   >
-                    <Trash2 size={16} color='#EF4444' />
+                    <Trash2 size={16} color={colors.destructive} />
                   </TouchableOpacity>
                 </View>
               ))}

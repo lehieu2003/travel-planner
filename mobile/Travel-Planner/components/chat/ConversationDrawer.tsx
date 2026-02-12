@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, MessageSquare, Trash2, Plus, Edit2 } from 'lucide-react-native';
 import { API_ENDPOINTS, getAuthHeaders } from '@/config/api';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface Conversation {
   id: string;
@@ -41,6 +42,7 @@ export function ConversationDrawer({
   onSelectConversation,
   onNewConversation,
 }: ConversationDrawerProps) {
+  const { colors } = useTheme();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [renameModalVisible, setRenameModalVisible] = useState(false);
@@ -221,16 +223,6 @@ export function ConversationDrawer({
     }
   };
 
-  // Log render state
-  console.log(
-    '🎭 [ConversationDrawer] Render - visible:',
-    visible,
-    'isLoading:',
-    isLoading,
-    'conversations:',
-    conversations.length,
-  );
-
   if (!visible) return null;
 
   return (
@@ -250,27 +242,35 @@ export function ConversationDrawer({
 
       {/* Drawer */}
       <Animated.View
-        className='absolute top-0 bottom-0 left-0 bg-white'
+        className='absolute top-0 bottom-0 left-0'
         style={{
           width: DRAWER_WIDTH,
           transform: [{ translateX }],
+          backgroundColor: colors.background,
         }}
       >
         <SafeAreaView className='flex-1' edges={['top', 'bottom']}>
           {/* Header */}
-          <View className='border-b border-slate-200 p-4 space-y-3'>
+          <View
+            className='border-b p-4 space-y-3'
+            style={{ borderColor: colors.border }}
+          >
             <View className='flex-row items-center justify-between'>
-              <Text className='text-lg font-bold text-slate-900'>
+              <Text
+                className='text-lg font-bold'
+                style={{ color: colors.foreground }}
+              >
                 Travel Planner
               </Text>
               <TouchableOpacity onPress={onClose}>
-                <X size={24} color='#64748B' />
+                <X size={24} color={colors.mutedForeground} />
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity
               onPress={handleNewChat}
-              className='bg-blue-600 rounded-xl py-3 px-4 flex-row items-center justify-center'
+              className='rounded-xl py-3 px-4 flex-row items-center justify-center'
+              style={{ backgroundColor: colors.primary }}
               activeOpacity={0.7}
             >
               <Plus size={20} color='white' />
@@ -283,57 +283,60 @@ export function ConversationDrawer({
           {/* Conversations List */}
           {isLoading ? (
             <View className='flex-1 items-center justify-center'>
-              <ActivityIndicator size='large' color='#0066FF' />
+              <ActivityIndicator size='large' color={colors.primary} />
             </View>
           ) : conversations.length === 0 ? (
             <View className='flex-1 items-center justify-center p-8'>
-              <MessageSquare size={48} color='#CBD5E1' />
-              <Text className='text-lg font-semibold text-slate-900 mt-4 mb-2'>
+              <MessageSquare size={48} color={colors.mutedForeground} />
+              <Text
+                className='text-lg font-semibold mt-4 mb-2'
+                style={{ color: colors.foreground }}
+              >
                 Chưa có cuộc trò chuyện nào
               </Text>
-              <Text className='text-sm text-slate-600 text-center'>
+              <Text
+                className='text-sm text-center'
+                style={{ color: colors.mutedForeground }}
+              >
                 Bắt đầu trò chuyện mới để lên kế hoạch du lịch
               </Text>
             </View>
           ) : (
             <ScrollView className='flex-1 p-3'>
               {conversations.map((conversation, index) => {
-                console.log(
-                  `🎨 [ConversationDrawer] Rendering conversation ${index}:`,
-                  {
-                    id: conversation.id,
-                    title: conversation.title,
-                  },
-                );
                 const isActive = currentConversationId === conversation.id;
                 return (
                   <View key={conversation.id} className='mb-2'>
                     <TouchableOpacity
                       onPress={() => handleSelect(conversation)}
-                      className={`rounded-xl p-3 border ${
-                        isActive
-                          ? 'bg-blue-50 border-blue-200'
-                          : 'bg-white border-slate-200'
-                      }`}
+                      className='rounded-xl p-3 border'
+                      style={{
+                        backgroundColor: isActive ? colors.accent : colors.card,
+                        borderColor: colors.border,
+                      }}
                       activeOpacity={0.7}
                     >
                       <View className='flex-row items-start gap-3'>
                         <View className='mt-1'>
                           <MessageSquare
                             size={16}
-                            color={isActive ? '#2563EB' : '#64748B'}
+                            color={
+                              isActive ? colors.primary : colors.mutedForeground
+                            }
                           />
                         </View>
                         <View className='flex-1 min-w-0'>
                           <Text
-                            className={`font-medium ${
-                              isActive ? 'text-blue-900' : 'text-slate-900'
-                            }`}
+                            className='font-medium'
                             numberOfLines={2}
+                            style={{ color: colors.foreground }}
                           >
                             {conversation.title}
                           </Text>
-                          <Text className='text-xs text-slate-500 mt-1'>
+                          <Text
+                            className='text-xs mt-1'
+                            style={{ color: colors.mutedForeground }}
+                          >
                             {formatDate(conversation.updated_at)}
                           </Text>
                         </View>
@@ -341,12 +344,12 @@ export function ConversationDrawer({
                           <TouchableOpacity
                             onPress={() => handleRename(conversation)}
                           >
-                            <Edit2 size={16} color='#64748B' />
+                            <Edit2 size={16} color={colors.mutedForeground} />
                           </TouchableOpacity>
                           <TouchableOpacity
                             onPress={() => handleDelete(conversation)}
                           >
-                            <Trash2 size={16} color='#EF4444' />
+                            <Trash2 size={16} color={colors.destructive} />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -375,20 +378,33 @@ export function ConversationDrawer({
           >
             <View className='flex-1 bg-black/50 justify-center items-center p-4'>
               <TouchableWithoutFeedback>
-                <View className='bg-white rounded-2xl p-6 w-full max-w-sm'>
-                  <Text className='text-lg font-bold text-slate-900 mb-2'>
+                <View
+                  className='rounded-2xl p-6 w-full max-w-sm'
+                  style={{ backgroundColor: colors.card }}
+                >
+                  <Text
+                    className='text-lg font-bold mb-2'
+                    style={{ color: colors.foreground }}
+                  >
                     Đổi tên cuộc trò chuyện
                   </Text>
-                  <Text className='text-sm text-slate-600 mb-4'>
+                  <Text
+                    className='text-sm mb-4'
+                    style={{ color: colors.mutedForeground }}
+                  >
                     Nhập tên mới cho cuộc trò chuyện
                   </Text>
 
                   <TextInput
-                    className='bg-slate-100 rounded-xl px-4 py-3 text-slate-900 mb-6'
+                    className='rounded-xl px-4 py-3 mb-6'
+                    style={{
+                      backgroundColor: colors.input,
+                      color: colors.foreground,
+                    }}
                     value={newTitle}
                     onChangeText={setNewTitle}
                     placeholder='Nhập tên mới...'
-                    placeholderTextColor='#94A3B8'
+                    placeholderTextColor={colors.mutedForeground}
                     autoFocus
                     onSubmitEditing={submitRename}
                   />
@@ -396,17 +412,22 @@ export function ConversationDrawer({
                   <View className='flex-row gap-3'>
                     <TouchableOpacity
                       onPress={() => setRenameModalVisible(false)}
-                      className='flex-1 bg-slate-100 rounded-xl py-3 px-4'
+                      className='flex-1 rounded-xl py-3 px-4'
+                      style={{ backgroundColor: colors.muted }}
                       activeOpacity={0.7}
                     >
-                      <Text className='text-center font-semibold text-slate-700'>
+                      <Text
+                        className='text-center font-semibold'
+                        style={{ color: colors.foreground }}
+                      >
                         Hủy
                       </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       onPress={submitRename}
-                      className='flex-1 bg-blue-600 rounded-xl py-3 px-4'
+                      className='flex-1 rounded-xl py-3 px-4'
+                      style={{ backgroundColor: colors.primary }}
                       activeOpacity={0.7}
                     >
                       <Text className='text-center font-semibold text-white'>

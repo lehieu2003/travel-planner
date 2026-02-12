@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Configuration
 export const API_BASE_URL =
-  'https://7638-2402-800-6286-800f-c198-7ecb-ecfe-949d.ngrok-free.app';
+  'https://92d8-2402-800-6286-9ad9-a594-8e50-ba62-1976.ngrok-free.app';
 
 export const API_ENDPOINTS = {
   AUTH: {

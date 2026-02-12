@@ -9,6 +9,10 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import {
+  ThemeProvider as CustomThemeProvider,
+  useTheme,
+} from '@/contexts/ThemeContext';
 import '../global.css';
 
 export const unstable_settings = {
@@ -17,6 +21,7 @@ export const unstable_settings = {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const { activeTheme } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
@@ -36,13 +41,13 @@ function RootLayoutNav() {
   }, [isAuthenticated, isLoading, segments, router]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={activeTheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name='login' />
         <Stack.Screen name='register' />
         <Stack.Screen name='(tabs)' />
       </Stack>
-      <StatusBar style='auto' />
+      <StatusBar style={activeTheme === 'dark' ? 'light' : 'dark'} />
     </ThemeProvider>
   );
 }
@@ -50,7 +55,9 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <CustomThemeProvider>
+        <RootLayoutNav />
+      </CustomThemeProvider>
     </AuthProvider>
   );
 }

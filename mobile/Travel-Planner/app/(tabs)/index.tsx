@@ -12,8 +12,10 @@ import {
   TypingIndicator,
 } from '@/components/chat';
 import { useChatMessages, useItinerarySave } from '@/hooks';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function ChatScreen() {
+  const { colors } = useTheme();
   const [inputValue, setInputValue] = useState('');
   const [showDrawer, setShowDrawer] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -54,7 +56,11 @@ export default function ChatScreen() {
   };
 
   return (
-    <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
+    <SafeAreaView
+      className='flex-1'
+      edges={['top']}
+      style={{ backgroundColor: colors.background }}
+    >
       <ChatHeader
         conversationTitle={conversationTitle}
         onShowConversations={() => {

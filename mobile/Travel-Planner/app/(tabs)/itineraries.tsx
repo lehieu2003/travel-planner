@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MapPin, Calendar, DollarSign, X, Trash2 } from 'lucide-react-native';
 import { API_ENDPOINTS, getAuthHeaders } from '@/config/api';
 import { Button } from '@/components/ui/button';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface Itinerary {
   id: number;
@@ -28,6 +29,7 @@ interface Itinerary {
 }
 
 export default function ItinerariesScreen() {
+  const { colors } = useTheme();
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -133,33 +135,45 @@ export default function ItinerariesScreen() {
     ]);
   };
 
-  // Log render state
-  console.log(
-    '🎭 [Itineraries] Render - isLoading:',
-    isLoading,
-    'itineraries:',
-    itineraries.length,
-  );
-
   if (isLoading) {
     return (
-      <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
-        <View className='px-4 py-4 bg-white border-b border-slate-200'>
-          <Text className='text-2xl font-bold text-slate-900'>
+      <SafeAreaView
+        className='flex-1'
+        edges={['top']}
+        style={{ backgroundColor: colors.background }}
+      >
+        <View
+          className='px-4 py-4 border-b'
+          style={{ backgroundColor: colors.card, borderColor: colors.border }}
+        >
+          <Text
+            className='text-2xl font-bold'
+            style={{ color: colors.foreground }}
+          >
             Lịch trình đã lưu
           </Text>
         </View>
         <View className='flex-1 items-center justify-center'>
-          <ActivityIndicator size='large' color='#0066FF' />
+          <ActivityIndicator size='large' color={colors.primary} />
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
-      <View className='px-4 py-4 bg-white border-b border-slate-200'>
-        <Text className='text-2xl font-bold text-slate-900'>
+    <SafeAreaView
+      className='flex-1'
+      edges={['top']}
+      style={{ backgroundColor: colors.background }}
+    >
+      <View
+        className='px-4 py-4 border-b'
+        style={{ backgroundColor: colors.card, borderColor: colors.border }}
+      >
+        <Text
+          className='text-2xl font-bold'
+          style={{ color: colors.foreground }}
+        >
           Lịch trình đã lưu
         </Text>
       </View>
@@ -173,10 +187,16 @@ export default function ItinerariesScreen() {
         {itineraries.length === 0 ? (
           <View className='flex-1 items-center justify-center py-24'>
             <Text className='text-6xl mb-4'>📋</Text>
-            <Text className='text-lg font-semibold text-slate-900 mb-2'>
+            <Text
+              className='text-lg font-semibold mb-2'
+              style={{ color: colors.foreground }}
+            >
               Chưa có lịch trình nào
             </Text>
-            <Text className='text-sm text-slate-600 text-center'>
+            <Text
+              className='text-sm text-center'
+              style={{ color: colors.mutedForeground }}
+            >
               Lưu lịch trình từ cuộc trò chuyện để xem ở đây
             </Text>
           </View>
@@ -186,45 +206,76 @@ export default function ItinerariesScreen() {
               return (
                 <View
                   key={itinerary.id}
-                  className='bg-white rounded-2xl border border-slate-200 p-4 mb-4'
+                  className='rounded-2xl border p-4 mb-4'
+                  style={{
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                  }}
                 >
                   <TouchableOpacity
                     onPress={() => handleViewDetail(itinerary)}
                     activeOpacity={0.7}
                   >
-                    <Text className='text-lg font-bold text-slate-900 mb-3'>
+                    <Text
+                      className='text-lg font-bold mb-3'
+                      style={{ color: colors.foreground }}
+                    >
                       {itinerary.title}
                     </Text>
 
                     <View className='flex-row items-center mb-2'>
-                      <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
-                        <MapPin size={16} color='#0066FF' />
+                      <View
+                        className='w-8 h-8 rounded-full items-center justify-center mr-3'
+                        style={{ backgroundColor: colors.accent }}
+                      >
+                        <MapPin size={16} color={colors.primary} />
                       </View>
-                      <Text className='text-sm text-slate-600'>
+                      <Text
+                        className='text-sm'
+                        style={{ color: colors.mutedForeground }}
+                      >
                         {itinerary.payload.destination}
                       </Text>
                     </View>
 
                     <View className='flex-row items-center mb-2'>
-                      <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
-                        <Calendar size={16} color='#0066FF' />
+                      <View
+                        className='w-8 h-8 rounded-full items-center justify-center mr-3'
+                        style={{ backgroundColor: colors.accent }}
+                      >
+                        <Calendar size={16} color={colors.primary} />
                       </View>
-                      <Text className='text-sm text-slate-600'>
+                      <Text
+                        className='text-sm'
+                        style={{ color: colors.mutedForeground }}
+                      >
                         {itinerary.payload.duration}
                       </Text>
                     </View>
 
                     <View className='flex-row items-center mb-3'>
-                      <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
-                        <DollarSign size={16} color='#0066FF' />
+                      <View
+                        className='w-8 h-8 rounded-full items-center justify-center mr-3'
+                        style={{ backgroundColor: colors.accent }}
+                      >
+                        <DollarSign size={16} color={colors.primary} />
                       </View>
-                      <Text className='text-sm text-slate-600'>
+                      <Text
+                        className='text-sm'
+                        style={{ color: colors.mutedForeground }}
+                      >
                         {itinerary.payload.budget}
                       </Text>
                     </View>
 
-                    <View className='pt-3 border-t border-slate-200'>
-                      <Text className='text-xs text-slate-500'>
+                    <View
+                      className='pt-3 border-t'
+                      style={{ borderColor: colors.border }}
+                    >
+                      <Text
+                        className='text-xs'
+                        style={{ color: colors.mutedForeground }}
+                      >
                         Đã lưu: {formatDate(itinerary.created_at)}
                       </Text>
                     </View>
@@ -232,9 +283,10 @@ export default function ItinerariesScreen() {
 
                   <TouchableOpacity
                     onPress={() => handleDelete(itinerary)}
-                    className='absolute top-4 right-4 w-8 h-8 rounded-full bg-red-50 items-center justify-center'
+                    className='absolute top-4 right-4 w-8 h-8 rounded-full items-center justify-center'
+                    style={{ backgroundColor: `${colors.destructive}20` }}
                   >
-                    <Trash2 size={16} color='#EF4444' />
+                    <Trash2 size={16} color={colors.destructive} />
                   </TouchableOpacity>
                 </View>
               );
@@ -249,41 +301,69 @@ export default function ItinerariesScreen() {
         presentationStyle='pageSheet'
         onRequestClose={() => setShowDetailModal(false)}
       >
-        <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
-          <View className='flex-row items-center justify-between px-4 py-4 bg-white border-b border-slate-200'>
-            <Text className='text-xl font-bold text-slate-900'>
+        <SafeAreaView
+          className='flex-1'
+          edges={['top']}
+          style={{ backgroundColor: colors.background }}
+        >
+          <View
+            className='flex-row items-center justify-between px-4 py-4 border-b'
+            style={{ backgroundColor: colors.card, borderColor: colors.border }}
+          >
+            <Text
+              className='text-xl font-bold'
+              style={{ color: colors.foreground }}
+            >
               Chi tiết lịch trình
             </Text>
             <TouchableOpacity onPress={() => setShowDetailModal(false)}>
-              <X size={24} color='#64748B' />
+              <X size={24} color={colors.mutedForeground} />
             </TouchableOpacity>
           </View>
 
           <ScrollView className='flex-1'>
             {selectedItinerary && (
               <View className='p-4'>
-                <View className='bg-white rounded-2xl border border-slate-200 p-4 mb-4'>
-                  <Text className='text-2xl font-bold text-slate-900 mb-4'>
+                <View
+                  className='rounded-2xl border p-4 mb-4'
+                  style={{
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                  }}
+                >
+                  <Text
+                    className='text-2xl font-bold mb-4'
+                    style={{ color: colors.foreground }}
+                  >
                     {selectedItinerary.title}
                   </Text>
 
                   <View className='flex-row items-center mb-3'>
-                    <MapPin size={20} color='#0066FF' />
-                    <Text className='text-base text-slate-900 ml-3 font-semibold'>
+                    <MapPin size={20} color={colors.primary} />
+                    <Text
+                      className='text-base font-semibold ml-3'
+                      style={{ color: colors.foreground }}
+                    >
                       {selectedItinerary.payload.destination}
                     </Text>
                   </View>
 
                   <View className='flex-row items-center mb-3'>
-                    <Calendar size={20} color='#0066FF' />
-                    <Text className='text-base text-slate-600 ml-3'>
+                    <Calendar size={20} color={colors.primary} />
+                    <Text
+                      className='text-base ml-3'
+                      style={{ color: colors.mutedForeground }}
+                    >
                       {selectedItinerary.payload.duration}
                     </Text>
                   </View>
 
                   <View className='flex-row items-center'>
-                    <DollarSign size={20} color='#0066FF' />
-                    <Text className='text-base text-slate-600 ml-3'>
+                    <DollarSign size={20} color={colors.primary} />
+                    <Text
+                      className='text-base ml-3'
+                      style={{ color: colors.mutedForeground }}
+                    >
                       {selectedItinerary.payload.budget}
                     </Text>
                   </View>
@@ -292,16 +372,26 @@ export default function ItinerariesScreen() {
                 {selectedItinerary.payload.days &&
                   selectedItinerary.payload.days.length > 0 && (
                     <View>
-                      <Text className='text-lg font-bold text-slate-900 mb-3'>
+                      <Text
+                        className='text-lg font-bold mb-3'
+                        style={{ color: colors.foreground }}
+                      >
                         Lịch trình chi tiết
                       </Text>
                       {selectedItinerary.payload.days.map(
                         (day: any, index: number) => (
                           <View
                             key={index}
-                            className='bg-white rounded-2xl border border-slate-200 p-4 mb-4'
+                            className='rounded-2xl border p-4 mb-4'
+                            style={{
+                              backgroundColor: colors.card,
+                              borderColor: colors.border,
+                            }}
                           >
-                            <Text className='text-base font-bold text-slate-900 mb-3'>
+                            <Text
+                              className='text-base font-bold mb-3'
+                              style={{ color: colors.foreground }}
+                            >
                               Ngày {day.day} - {day.date}
                             </Text>
                             {day.activities &&
@@ -309,18 +399,32 @@ export default function ItinerariesScreen() {
                                 (activity: any, actIndex: number) => (
                                   <View
                                     key={actIndex}
-                                    className='mb-3 pb-3 border-b border-slate-200 last:border-b-0'
+                                    className='mb-3 pb-3 border-b last:border-b-0'
+                                    style={{ borderColor: colors.border }}
                                   >
-                                    <Text className='text-sm font-semibold text-slate-900'>
+                                    <Text
+                                      className='text-sm font-semibold'
+                                      style={{ color: colors.foreground }}
+                                    >
                                       {activity.name}
                                     </Text>
                                     {activity.time && (
-                                      <Text className='text-xs text-slate-600 mt-1'>
+                                      <Text
+                                        className='text-xs mt-1'
+                                        style={{
+                                          color: colors.mutedForeground,
+                                        }}
+                                      >
                                         ⏰ {activity.time}
                                       </Text>
                                     )}
                                     {activity.address && (
-                                      <Text className='text-xs text-slate-600 mt-1'>
+                                      <Text
+                                        className='text-xs mt-1'
+                                        style={{
+                                          color: colors.mutedForeground,
+                                        }}
+                                      >
                                         📍 {activity.address}
                                       </Text>
                                     )}
@@ -336,7 +440,10 @@ export default function ItinerariesScreen() {
             )}
           </ScrollView>
 
-          <View className='p-4 bg-white border-t border-slate-200'>
+          <View
+            className='p-4 border-t'
+            style={{ backgroundColor: colors.card, borderColor: colors.border }}
+          >
             <Button onPress={() => setShowDetailModal(false)}>Đóng</Button>
           </View>
         </SafeAreaView>

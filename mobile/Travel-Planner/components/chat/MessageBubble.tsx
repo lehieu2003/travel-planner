@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { User, Sparkles } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface MessageBubbleProps {
   role: 'user' | 'assistant';
@@ -14,6 +15,7 @@ export function MessageBubble({
   content,
   timestamp,
 }: MessageBubbleProps) {
+  const { colors } = useTheme();
   const isUser = role === 'user';
 
   // Check if content has HTML tags (for assistant messages)
@@ -31,8 +33,11 @@ export function MessageBubble({
       {/* Avatar */}
       <View className='flex-shrink-0'>
         {isUser ? (
-          <View className='w-8 h-8 rounded-full bg-slate-200 items-center justify-center'>
-            <User size={16} color='#64748B' />
+          <View
+            className='w-8 h-8 rounded-full items-center justify-center'
+            style={{ backgroundColor: colors.muted }}
+          >
+            <User size={16} color={colors.mutedForeground} />
           </View>
         ) : (
           <LinearGradient
@@ -56,12 +61,11 @@ export function MessageBubble({
       {/* Message Content */}
       <View className={`flex-1 ${isUser ? 'items-end' : 'items-start'}`}>
         <View
-          className={`max-w-[85%] px-4 py-3 rounded-2xl ${
-            isUser
-              ? 'bg-[#EDF2FF] border border-transparent'
-              : 'bg-white border border-slate-200'
-          }`}
+          className='max-w-[85%] px-4 py-3 rounded-2xl'
           style={{
+            backgroundColor: isUser ? colors.accent : colors.card,
+            borderColor: colors.border,
+            borderWidth: 1,
             elevation: 1,
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 1 },
@@ -74,9 +78,8 @@ export function MessageBubble({
             // For now, we'll strip HTML tags and display plain text
             // In production, you might want to use react-native-render-html
             <Text
-              className={`text-base leading-6 ${
-                isUser ? 'text-slate-900' : 'text-slate-900'
-              }`}
+              className='text-base leading-6'
+              style={{ color: colors.foreground }}
             >
               {content
                 .replace(/<b>|<\/b>|<strong>|<\/strong>/g, '')
@@ -84,9 +87,8 @@ export function MessageBubble({
             </Text>
           ) : (
             <Text
-              className={`text-base leading-6 ${
-                isUser ? 'text-slate-900' : 'text-slate-900'
-              }`}
+              className='text-base leading-6'
+              style={{ color: colors.foreground }}
             >
               {content}
             </Text>
@@ -96,9 +98,10 @@ export function MessageBubble({
         {/* Timestamp */}
         {timestamp && (
           <Text
-            className={`text-xs text-slate-500 mt-1 px-2 ${
+            className={`text-xs mt-1 px-2 ${
               isUser ? 'text-right' : 'text-left'
             }`}
+            style={{ color: colors.mutedForeground }}
           >
             {timestamp}
           </Text>

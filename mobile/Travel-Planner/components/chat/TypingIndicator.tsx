@@ -2,8 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated } from 'react-native';
 import { Sparkles } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export function TypingIndicator() {
+  const { colors } = useTheme();
   const dot1Opacity = useRef(new Animated.Value(0.3)).current;
   const dot2Opacity = useRef(new Animated.Value(0.3)).current;
   const dot3Opacity = useRef(new Animated.Value(0.3)).current;
@@ -66,8 +68,11 @@ export function TypingIndicator() {
 
       {/* Typing Bubble */}
       <View
-        className='bg-white border border-slate-200 rounded-2xl px-5 py-3'
+        className='rounded-2xl px-5 py-3'
         style={{
+          backgroundColor: colors.card,
+          borderColor: colors.border,
+          borderWidth: 1,
           elevation: 1,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 1 },
@@ -76,19 +81,21 @@ export function TypingIndicator() {
         }}
       >
         <View className='flex-row items-center gap-2'>
-          <Text className='text-sm text-slate-600'>TravelGPT đang viết</Text>
+          <Text className='text-sm' style={{ color: colors.mutedForeground }}>
+            TravelGPT đang viết
+          </Text>
           <View className='flex-row gap-1'>
             <Animated.View
-              className='w-1.5 h-1.5 bg-blue-600 rounded-full'
-              style={{ opacity: dot1Opacity }}
+              className='w-1.5 h-1.5 rounded-full'
+              style={{ opacity: dot1Opacity, backgroundColor: colors.primary }}
             />
             <Animated.View
-              className='w-1.5 h-1.5 bg-blue-600 rounded-full'
-              style={{ opacity: dot2Opacity }}
+              className='w-1.5 h-1.5 rounded-full'
+              style={{ opacity: dot2Opacity, backgroundColor: colors.primary }}
             />
             <Animated.View
-              className='w-1.5 h-1.5 bg-blue-600 rounded-full'
-              style={{ opacity: dot3Opacity }}
+              className='w-1.5 h-1.5 rounded-full'
+              style={{ opacity: dot3Opacity, backgroundColor: colors.primary }}
             />
           </View>
         </View>

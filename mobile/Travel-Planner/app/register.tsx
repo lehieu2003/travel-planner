@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { API_ENDPOINTS, setAuthToken } from '@/config/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { Gender, EnergyLevel, TravelPreference } from '@/types';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const travelPreferences: TravelPreference[] = [
   {
@@ -70,6 +71,7 @@ const IconMap: any = {
 };
 
 export default function RegisterScreen() {
+  const { colors } = useTheme();
   const router = useRouter();
   const { login } = useAuth();
   const [step, setStep] = useState(1);
@@ -146,36 +148,48 @@ export default function RegisterScreen() {
     <KeyboardAvoidingView
       className='flex-1'
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ backgroundColor: colors.background }}
     >
       <ScrollView
-        className='flex-1 bg-slate-50'
+        className='flex-1'
         showsVerticalScrollIndicator={false}
+        style={{ backgroundColor: colors.background }}
       >
         <View className='pt-16 px-6 pb-8 items-center'>
           <TouchableOpacity
             onPress={() => (step === 1 ? router.back() : setStep(1))}
             className='absolute left-6 top-16'
           >
-            <ArrowLeft size={24} color='#0F172A' />
+            <ArrowLeft size={24} color={colors.foreground} />
           </TouchableOpacity>
 
-          <View className='w-20 h-20 rounded-2xl bg-blue-600 items-center justify-center mb-4'>
+          <View
+            className='w-20 h-20 rounded-2xl items-center justify-center mb-4'
+            style={{ backgroundColor: colors.primary }}
+          >
             <Text className='text-5xl'>✈️</Text>
           </View>
-          <Text className='text-3xl font-bold text-slate-900 mb-2'>
+          <Text
+            className='text-3xl font-bold mb-2'
+            style={{ color: colors.foreground }}
+          >
             Đăng ký tài khoản
           </Text>
-          <Text className='text-base text-slate-600'>
+          <Text className='text-base' style={{ color: colors.mutedForeground }}>
             {step === 1 ? 'Tạo tài khoản mới' : 'Cá nhân hóa trải nghiệm'}
           </Text>
 
           {/* Progress Indicator */}
           <View className='flex-row gap-2 mt-4'>
             <View
-              className={`h-1.5 w-16 rounded-full ${step === 1 ? 'bg-blue-600' : 'bg-blue-600'}`}
+              className='h-1.5 w-16 rounded-full'
+              style={{ backgroundColor: colors.primary }}
             />
             <View
-              className={`h-1.5 w-16 rounded-full ${step === 2 ? 'bg-blue-600' : 'bg-slate-300'}`}
+              className='h-1.5 w-16 rounded-full'
+              style={{
+                backgroundColor: step === 2 ? colors.primary : colors.muted,
+              }}
             />
           </View>
         </View>
@@ -225,7 +239,10 @@ export default function RegisterScreen() {
               onPress={() => router.back()}
               className='mt-4 items-center'
             >
-              <Text className='text-sm text-blue-600 font-semibold'>
+              <Text
+                className='text-sm font-semibold'
+                style={{ color: colors.primary }}
+              >
                 Đã có tài khoản? Đăng nhập
               </Text>
             </TouchableOpacity>
@@ -243,7 +260,10 @@ export default function RegisterScreen() {
               keyboardType='numeric'
             />
 
-            <Text className='text-sm font-semibold text-slate-900 mb-2 mt-2'>
+            <Text
+              className='text-sm font-semibold mb-2 mt-2'
+              style={{ color: colors.foreground }}
+            >
               Giới tính
             </Text>
             <View className='flex-row gap-2 mb-4'>
@@ -254,17 +274,23 @@ export default function RegisterScreen() {
               ].map((option) => (
                 <TouchableOpacity
                   key={option.value}
-                  className={`flex-1 py-3 px-4 rounded-xl border items-center ${
-                    gender === option.value
-                      ? 'bg-blue-600 border-blue-600'
-                      : 'bg-white border-slate-200'
-                  }`}
+                  className='flex-1 py-3 px-4 rounded-xl border items-center'
+                  style={{
+                    backgroundColor:
+                      gender === option.value ? colors.primary : colors.card,
+                    borderColor:
+                      gender === option.value ? colors.primary : colors.border,
+                  }}
                   onPress={() => setGender(option.value as Gender)}
                 >
                   <Text
-                    className={`text-sm font-semibold ${
-                      gender === option.value ? 'text-white' : 'text-slate-600'
-                    }`}
+                    className='text-sm font-semibold'
+                    style={{
+                      color:
+                        gender === option.value
+                          ? '#FFFFFF'
+                          : colors.mutedForeground,
+                    }}
                   >
                     {option.label}
                   </Text>
@@ -272,7 +298,10 @@ export default function RegisterScreen() {
               ))}
             </View>
 
-            <Text className='text-sm font-semibold text-slate-900 mb-2 mt-2'>
+            <Text
+              className='text-sm font-semibold mb-2 mt-2'
+              style={{ color: colors.foreground }}
+            >
               Mức năng lượng
             </Text>
             <View className='flex-row gap-2 mb-4'>
@@ -283,19 +312,27 @@ export default function RegisterScreen() {
               ].map((option) => (
                 <TouchableOpacity
                   key={option.value}
-                  className={`flex-1 py-3 px-4 rounded-xl border items-center ${
-                    energyLevel === option.value
-                      ? 'bg-blue-600 border-blue-600'
-                      : 'bg-white border-slate-200'
-                  }`}
+                  className='flex-1 py-3 px-4 rounded-xl border items-center'
+                  style={{
+                    backgroundColor:
+                      energyLevel === option.value
+                        ? colors.primary
+                        : colors.card,
+                    borderColor:
+                      energyLevel === option.value
+                        ? colors.primary
+                        : colors.border,
+                  }}
                   onPress={() => setEnergyLevel(option.value as EnergyLevel)}
                 >
                   <Text
-                    className={`text-sm font-semibold ${
-                      energyLevel === option.value
-                        ? 'text-white'
-                        : 'text-slate-600'
-                    }`}
+                    className='text-sm font-semibold'
+                    style={{
+                      color:
+                        energyLevel === option.value
+                          ? '#FFFFFF'
+                          : colors.mutedForeground,
+                    }}
                   >
                     {option.label}
                   </Text>
@@ -303,7 +340,10 @@ export default function RegisterScreen() {
               ))}
             </View>
 
-            <Text className='text-sm font-semibold text-slate-900 mb-2 mt-2'>
+            <Text
+              className='text-sm font-semibold mb-2 mt-2'
+              style={{ color: colors.foreground }}
+            >
               Ngân sách (triệu VNĐ)
             </Text>
             <View className='flex-row items-center gap-3 mb-4'>
@@ -314,7 +354,12 @@ export default function RegisterScreen() {
                 keyboardType='numeric'
                 containerClassName='flex-1 mb-0'
               />
-              <Text className='text-lg text-slate-600 -mt-4'>-</Text>
+              <Text
+                className='text-lg -mt-4'
+                style={{ color: colors.mutedForeground }}
+              >
+                -
+              </Text>
               <Input
                 value={budgetMax}
                 onChangeText={setBudgetMax}
@@ -324,24 +369,31 @@ export default function RegisterScreen() {
               />
             </View>
 
-            <Text className='text-sm font-semibold text-slate-900 mb-2 mt-2'>
+            <Text
+              className='text-sm font-semibold mb-2 mt-2'
+              style={{ color: colors.foreground }}
+            >
               Sở thích du lịch
             </Text>
             <View className='flex-row flex-wrap gap-2 mb-6'>
               {travelPreferences.map((pref) => {
                 const Icon = IconMap[pref.icon];
+                const isSelected = selectedPreferences.includes(pref.id);
                 return (
                   <TouchableOpacity
                     key={pref.id}
-                    className={`flex-row items-center py-2 px-3 rounded-full ${pref.color} ${
-                      selectedPreferences.includes(pref.id)
-                        ? 'border-2 border-blue-600'
-                        : ''
-                    }`}
+                    className='flex-row items-center py-2 px-3 rounded-full border-2'
+                    style={{
+                      backgroundColor: colors.accent,
+                      borderColor: isSelected ? colors.primary : 'transparent',
+                    }}
                     onPress={() => togglePreference(pref.id)}
                   >
-                    {Icon && <Icon size={16} color='#0F172A' />}
-                    <Text className='text-xs text-slate-900 font-semibold ml-1.5'>
+                    {Icon && <Icon size={16} color={colors.foreground} />}
+                    <Text
+                      className='text-xs font-semibold ml-1.5'
+                      style={{ color: colors.foreground }}
+                    >
                       {pref.label}
                     </Text>
                   </TouchableOpacity>

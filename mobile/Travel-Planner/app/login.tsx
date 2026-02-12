@@ -14,8 +14,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { API_ENDPOINTS, setAuthToken } from '@/config/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function LoginScreen() {
+  const { colors } = useTheme();
   const router = useRouter();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -66,19 +68,29 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       className='flex-1'
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ backgroundColor: colors.background }}
     >
       <ScrollView
-        className='flex-1 bg-slate-50'
+        className='flex-1'
         showsVerticalScrollIndicator={false}
+        style={{ backgroundColor: colors.background }}
       >
         <View className='pt-16 px-6 pb-8 items-center'>
-          <View className='w-20 h-20 rounded-2xl bg-blue-600 items-center justify-center mb-4'>
+          <View
+            className='w-20 h-20 rounded-2xl items-center justify-center mb-4'
+            style={{ backgroundColor: colors.primary }}
+          >
             <Text className='text-5xl'>✈️</Text>
           </View>
-          <Text className='text-3xl font-bold text-slate-900 mb-2'>
+          <Text
+            className='text-3xl font-bold mb-2'
+            style={{ color: colors.foreground }}
+          >
             Travel Planner
           </Text>
-          <Text className='text-base text-slate-600'>Chào mừng trở lại</Text>
+          <Text className='text-base' style={{ color: colors.mutedForeground }}>
+            Chào mừng trở lại
+          </Text>
         </View>
 
         <View className='px-6 pb-10'>
@@ -119,7 +131,10 @@ export default function LoginScreen() {
             onPress={() => router.push('/register' as any)}
             className='mt-4 items-center'
           >
-            <Text className='text-sm text-blue-600 font-semibold'>
+            <Text
+              className='text-sm font-semibold'
+              style={{ color: colors.primary }}
+            >
               Chưa có tài khoản? Đăng ký
             </Text>
           </TouchableOpacity>
