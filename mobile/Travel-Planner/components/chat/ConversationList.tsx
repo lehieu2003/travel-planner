@@ -35,6 +35,10 @@ export function ConversationList({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log(
+      '🔄 [ConversationList] useEffect triggered - visible:',
+      visible,
+    );
     if (visible) {
       loadConversations();
     }
@@ -44,16 +48,24 @@ export function ConversationList({
     try {
       setIsLoading(true);
       const headers = await getAuthHeaders();
+
       const response = await fetch(API_ENDPOINTS.CONVERSATIONS.LIST, {
         headers,
       });
 
       if (response.ok) {
         const data = await response.json();
-        setConversations(data.conversations || []);
+
+        setConversations(Array.isArray(data) ? data : []);
+      } else {
+        const errorText = await response.text();
+        console.error('❌ [ConversationList] Error response:', errorText);
       }
     } catch (error) {
-      console.error('Error loading conversations:', error);
+      console.error(
+        '❌ [ConversationList] Error loading conversations:',
+        error,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -114,6 +126,14 @@ export function ConversationList({
       return date.toLocaleDateString('vi-VN');
     }
   };
+
+  // Log render state
+  console.log(
+    '🎭 [ConversationList] Render - isLoading:',
+    isLoading,
+    'conversations:',
+    conversations.length,
+  );
 
   return (
     <Modal

@@ -16,7 +16,9 @@ export function ChatHeader({
   return (
     <View className='flex-row items-center justify-between px-4 py-3 bg-white border-b border-slate-200'>
       <TouchableOpacity
-        onPress={onShowConversations}
+        onPress={() => {
+          onShowConversations();
+        }}
         className='w-10 h-10 rounded-xl items-center justify-center'
         activeOpacity={0.7}
       >

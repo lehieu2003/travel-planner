@@ -43,16 +43,21 @@ export default function ItinerariesScreen() {
   const loadItineraries = async () => {
     try {
       const headers = await getAuthHeaders();
+
       const response = await fetch(API_ENDPOINTS.ITINERARIES.LIST, {
         headers,
       });
 
       if (response.ok) {
         const data = await response.json();
+
         setItineraries(data.items || []);
+      } else {
+        const errorText = await response.text();
+        console.error('❌ [Itineraries] Error response:', errorText);
       }
     } catch (error) {
-      console.error('Error loading itineraries:', error);
+      console.error('❌ [Itineraries] Error loading itineraries:', error);
     } finally {
       setIsLoading(false);
       setRefreshing(false);
@@ -128,6 +133,14 @@ export default function ItinerariesScreen() {
     ]);
   };
 
+  // Log render state
+  console.log(
+    '🎭 [Itineraries] Render - isLoading:',
+    isLoading,
+    'itineraries:',
+    itineraries.length,
+  );
+
   if (isLoading) {
     return (
       <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
@@ -169,61 +182,63 @@ export default function ItinerariesScreen() {
           </View>
         ) : (
           <View className='p-4'>
-            {itineraries.map((itinerary) => (
-              <View
-                key={itinerary.id}
-                className='bg-white rounded-2xl border border-slate-200 p-4 mb-4'
-              >
-                <TouchableOpacity
-                  onPress={() => handleViewDetail(itinerary)}
-                  activeOpacity={0.7}
+            {itineraries.map((itinerary, index) => {
+              return (
+                <View
+                  key={itinerary.id}
+                  className='bg-white rounded-2xl border border-slate-200 p-4 mb-4'
                 >
-                  <Text className='text-lg font-bold text-slate-900 mb-3'>
-                    {itinerary.title}
-                  </Text>
+                  <TouchableOpacity
+                    onPress={() => handleViewDetail(itinerary)}
+                    activeOpacity={0.7}
+                  >
+                    <Text className='text-lg font-bold text-slate-900 mb-3'>
+                      {itinerary.title}
+                    </Text>
 
-                  <View className='flex-row items-center mb-2'>
-                    <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
-                      <MapPin size={16} color='#0066FF' />
+                    <View className='flex-row items-center mb-2'>
+                      <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
+                        <MapPin size={16} color='#0066FF' />
+                      </View>
+                      <Text className='text-sm text-slate-600'>
+                        {itinerary.payload.destination}
+                      </Text>
                     </View>
-                    <Text className='text-sm text-slate-600'>
-                      {itinerary.payload.destination}
-                    </Text>
-                  </View>
 
-                  <View className='flex-row items-center mb-2'>
-                    <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
-                      <Calendar size={16} color='#0066FF' />
+                    <View className='flex-row items-center mb-2'>
+                      <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
+                        <Calendar size={16} color='#0066FF' />
+                      </View>
+                      <Text className='text-sm text-slate-600'>
+                        {itinerary.payload.duration}
+                      </Text>
                     </View>
-                    <Text className='text-sm text-slate-600'>
-                      {itinerary.payload.duration}
-                    </Text>
-                  </View>
 
-                  <View className='flex-row items-center mb-3'>
-                    <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
-                      <DollarSign size={16} color='#0066FF' />
+                    <View className='flex-row items-center mb-3'>
+                      <View className='w-8 h-8 rounded-full bg-blue-50 items-center justify-center mr-3'>
+                        <DollarSign size={16} color='#0066FF' />
+                      </View>
+                      <Text className='text-sm text-slate-600'>
+                        {itinerary.payload.budget}
+                      </Text>
                     </View>
-                    <Text className='text-sm text-slate-600'>
-                      {itinerary.payload.budget}
-                    </Text>
-                  </View>
 
-                  <View className='pt-3 border-t border-slate-200'>
-                    <Text className='text-xs text-slate-500'>
-                      Đã lưu: {formatDate(itinerary.created_at)}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                    <View className='pt-3 border-t border-slate-200'>
+                      <Text className='text-xs text-slate-500'>
+                        Đã lưu: {formatDate(itinerary.created_at)}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => handleDelete(itinerary)}
-                  className='absolute top-4 right-4 w-8 h-8 rounded-full bg-red-50 items-center justify-center'
-                >
-                  <Trash2 size={16} color='#EF4444' />
-                </TouchableOpacity>
-              </View>
-            ))}
+                  <TouchableOpacity
+                    onPress={() => handleDelete(itinerary)}
+                    className='absolute top-4 right-4 w-8 h-8 rounded-full bg-red-50 items-center justify-center'
+                  >
+                    <Trash2 size={16} color='#EF4444' />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
           </View>
         )}
       </ScrollView>

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // API Configuration
 export const API_BASE_URL =
-  'https://c31d-2402-800-6286-800f-c198-7ecb-ecfe-949d.ngrok-free.app';
+  'https://7638-2402-800-6286-800f-c198-7ecb-ecfe-949d.ngrok-free.app';
 
 export const API_ENDPOINTS = {
   AUTH: {
@@ -18,8 +18,8 @@ export const API_ENDPOINTS = {
     GENERATE: `${API_BASE_URL}/plan`,
   },
   CONVERSATIONS: {
-    LIST: `${API_BASE_URL}/conversations`,
-    CREATE: `${API_BASE_URL}/conversations`,
+    LIST: `${API_BASE_URL}/conversations/`,
+    CREATE: `${API_BASE_URL}/conversations/`,
     GET: (id: string) => `${API_BASE_URL}/conversations/${id}`,
     UPDATE_TITLE: (id: string) => `${API_BASE_URL}/conversations/${id}/title`,
     DELETE: (id: string) => `${API_BASE_URL}/conversations/${id}`,
@@ -27,8 +27,8 @@ export const API_ENDPOINTS = {
       `${API_BASE_URL}/conversations/${id}/messages`,
   },
   ITINERARIES: {
-    LIST: `${API_BASE_URL}/itineraries`,
-    SAVE: `${API_BASE_URL}/itineraries`,
+    LIST: `${API_BASE_URL}/itineraries/`,
+    SAVE: `${API_BASE_URL}/itineraries/`,
     GET: (id: number) => `${API_BASE_URL}/itineraries/${id}`,
   },
 };

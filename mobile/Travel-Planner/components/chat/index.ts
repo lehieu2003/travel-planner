@@ -1,5 +1,6 @@
 export { MessageBubble } from './MessageBubble';
 export { ItinerarySaveButton } from './ItinerarySaveButton';
+export { ItineraryCard } from './ItineraryCard';
 export { ChatInput } from './ChatInput';
 export { ChatHeader } from './ChatHeader';
 export { ConversationList } from './ConversationList';

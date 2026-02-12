@@ -9,9 +9,13 @@ import {
   Animated,
   Dimensions,
   TouchableWithoutFeedback,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { X, MessageSquare, Trash2, Plus } from 'lucide-react-native';
+import { X, MessageSquare, Trash2, Plus, Edit2 } from 'lucide-react-native';
 import { API_ENDPOINTS, getAuthHeaders } from '@/config/api';
 
 interface Conversation {
@@ -39,6 +43,10 @@ export function ConversationDrawer({
 }: ConversationDrawerProps) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [renameModalVisible, setRenameModalVisible] = useState(false);
+  const [selectedConversation, setSelectedConversation] =
+    useState<Conversation | null>(null);
+  const [newTitle, setNewTitle] = useState('');
   const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
 
@@ -80,16 +88,24 @@ export function ConversationDrawer({
     try {
       setIsLoading(true);
       const headers = await getAuthHeaders();
+
       const response = await fetch(API_ENDPOINTS.CONVERSATIONS.LIST, {
         headers,
       });
 
       if (response.ok) {
         const data = await response.json();
-        setConversations(data.conversations || []);
+
+        setConversations(Array.isArray(data) ? data : []);
+      } else {
+        const errorText = await response.text();
+        console.error('❌ [ConversationDrawer] Error response:', errorText);
       }
     } catch (error) {
-      console.error('Error loading conversations:', error);
+      console.error(
+        '❌ [ConversationDrawer] Error loading conversations:',
+        error,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -131,6 +147,50 @@ export function ConversationDrawer({
     );
   };
 
+  const handleRename = (conversation: Conversation) => {
+    setSelectedConversation(conversation);
+    setNewTitle(conversation.title);
+    setRenameModalVisible(true);
+  };
+
+  const submitRename = async () => {
+    if (!selectedConversation || !newTitle.trim()) {
+      Alert.alert('Lỗi', 'Tên không được để trống');
+      return;
+    }
+
+    try {
+      const headers = await getAuthHeaders();
+      const response = await fetch(
+        API_ENDPOINTS.CONVERSATIONS.UPDATE_TITLE(selectedConversation.id),
+        {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify({ title: newTitle.trim() }),
+        },
+      );
+
+      if (response.ok) {
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.id === selectedConversation.id
+              ? { ...c, title: newTitle.trim() }
+              : c,
+          ),
+        );
+        setRenameModalVisible(false);
+        Alert.alert('Thành công', 'Đã đổi tên cuộc trò chuyện');
+      } else {
+        const errorText = await response.text();
+        console.error('❌ [ConversationDrawer] Rename error:', errorText);
+        Alert.alert('Lỗi', 'Không thể đổi tên cuộc trò chuyện');
+      }
+    } catch (error) {
+      console.error('Error renaming conversation:', error);
+      Alert.alert('Lỗi', 'Không thể đổi tên cuộc trò chuyện');
+    }
+  };
+
   const handleSelect = (conversation: Conversation) => {
     onSelectConversation(conversation.id, conversation.title);
     onClose();
@@ -160,6 +220,16 @@ export function ConversationDrawer({
       return date.toLocaleDateString('vi-VN');
     }
   };
+
+  // Log render state
+  console.log(
+    '🎭 [ConversationDrawer] Render - visible:',
+    visible,
+    'isLoading:',
+    isLoading,
+    'conversations:',
+    conversations.length,
+  );
 
   if (!visible) return null;
 
@@ -205,7 +275,7 @@ export function ConversationDrawer({
             >
               <Plus size={20} color='white' />
               <Text className='text-white font-semibold ml-2'>
-                Cuộc trò chuyện mới
+                Trò chuyện mới
               </Text>
             </TouchableOpacity>
           </View>
@@ -227,7 +297,14 @@ export function ConversationDrawer({
             </View>
           ) : (
             <ScrollView className='flex-1 p-3'>
-              {conversations.map((conversation) => {
+              {conversations.map((conversation, index) => {
+                console.log(
+                  `🎨 [ConversationDrawer] Rendering conversation ${index}:`,
+                  {
+                    id: conversation.id,
+                    title: conversation.title,
+                  },
+                );
                 const isActive = currentConversationId === conversation.id;
                 return (
                   <View key={conversation.id} className='mb-2'>
@@ -260,12 +337,18 @@ export function ConversationDrawer({
                             {formatDate(conversation.updated_at)}
                           </Text>
                         </View>
-                        <TouchableOpacity
-                          onPress={() => handleDelete(conversation)}
-                          className='ml-2'
-                        >
-                          <Trash2 size={16} color='#EF4444' />
-                        </TouchableOpacity>
+                        <View className='flex-row items-center gap-2'>
+                          <TouchableOpacity
+                            onPress={() => handleRename(conversation)}
+                          >
+                            <Edit2 size={16} color='#64748B' />
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => handleDelete(conversation)}
+                          >
+                            <Trash2 size={16} color='#EF4444' />
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -275,6 +358,68 @@ export function ConversationDrawer({
           )}
         </SafeAreaView>
       </Animated.View>
+
+      {/* Rename Modal */}
+      <Modal
+        visible={renameModalVisible}
+        transparent
+        animationType='fade'
+        onRequestClose={() => setRenameModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className='flex-1'
+        >
+          <TouchableWithoutFeedback
+            onPress={() => setRenameModalVisible(false)}
+          >
+            <View className='flex-1 bg-black/50 justify-center items-center p-4'>
+              <TouchableWithoutFeedback>
+                <View className='bg-white rounded-2xl p-6 w-full max-w-sm'>
+                  <Text className='text-lg font-bold text-slate-900 mb-2'>
+                    Đổi tên cuộc trò chuyện
+                  </Text>
+                  <Text className='text-sm text-slate-600 mb-4'>
+                    Nhập tên mới cho cuộc trò chuyện
+                  </Text>
+
+                  <TextInput
+                    className='bg-slate-100 rounded-xl px-4 py-3 text-slate-900 mb-6'
+                    value={newTitle}
+                    onChangeText={setNewTitle}
+                    placeholder='Nhập tên mới...'
+                    placeholderTextColor='#94A3B8'
+                    autoFocus
+                    onSubmitEditing={submitRename}
+                  />
+
+                  <View className='flex-row gap-3'>
+                    <TouchableOpacity
+                      onPress={() => setRenameModalVisible(false)}
+                      className='flex-1 bg-slate-100 rounded-xl py-3 px-4'
+                      activeOpacity={0.7}
+                    >
+                      <Text className='text-center font-semibold text-slate-700'>
+                        Hủy
+                      </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={submitRename}
+                      className='flex-1 bg-blue-600 rounded-xl py-3 px-4'
+                      activeOpacity={0.7}
+                    >
+                      <Text className='text-center font-semibold text-white'>
+                        Lưu
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   MessageBubble,
   ItinerarySaveButton,
+  ItineraryCard,
   ChatInput,
   ChatHeader,
   ConversationDrawer,
@@ -56,7 +57,9 @@ export default function ChatScreen() {
     <SafeAreaView className='flex-1 bg-slate-50' edges={['top']}>
       <ChatHeader
         conversationTitle={conversationTitle}
-        onShowConversations={() => setShowDrawer(true)}
+        onShowConversations={() => {
+          setShowDrawer(true);
+        }}
         onNewConversation={handleNewConversation}
       />
 
@@ -71,23 +74,34 @@ export default function ChatScreen() {
           contentContainerStyle={{ padding: 16, flexGrow: 1 }}
         >
           {messages.length === 0 ? (
-            <EmptyState />
+            <>
+              <EmptyState />
+            </>
           ) : (
-            messages.map((message, index) => (
-              <View key={index} className='w-full'>
-                <MessageBubble
-                  role={message.role}
-                  content={message.content}
-                  timestamp={message.timestamp}
-                />
-                {message.itineraryData && (
-                  <ItinerarySaveButton
-                    isSaved={savedItineraryIds.has(`${index}`)}
-                    onSave={() => saveItinerary(message.itineraryData, index)}
-                  />
-                )}
-              </View>
-            ))
+            <>
+              {messages.map((message, index) => {
+                return (
+                  <View key={index} className='w-full mb-2'>
+                    <MessageBubble
+                      role={message.role}
+                      content={message.content}
+                      timestamp={message.timestamp}
+                    />
+                    {message.itineraryData && (
+                      <View className='mt-3'>
+                        <ItineraryCard itineraryData={message.itineraryData} />
+                        <ItinerarySaveButton
+                          isSaved={savedItineraryIds.has(`${index}`)}
+                          onSave={() =>
+                            saveItinerary(message.itineraryData, index)
+                          }
+                        />
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
+            </>
           )}
 
           {isTyping && <TypingIndicator />}
@@ -103,7 +117,9 @@ export default function ChatScreen() {
 
       <ConversationDrawer
         visible={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        onClose={() => {
+          setShowDrawer(false);
+        }}
         currentConversationId={conversationId}
         onSelectConversation={handleSelectConversation}
         onNewConversation={handleNewConversation}

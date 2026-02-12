@@ -17,20 +17,64 @@ export function useChatMessages() {
 
   const loadMessages = async (convId: string) => {
     try {
-      const headers = await getAuthHeaders();
-      const response = await fetch(
-        API_ENDPOINTS.CONVERSATIONS.GET_MESSAGES(convId),
-        {
-          headers,
-        },
+      console.log(
+        '🔍 [useChatMessages] Loading messages for conversation:',
+        convId,
       );
+      const headers = await getAuthHeaders();
+      const url = API_ENDPOINTS.CONVERSATIONS.GET_MESSAGES(convId);
+      console.log('🔍 [useChatMessages] API URL:', url);
+      console.log('🔍 [useChatMessages] Headers:', headers);
+
+      const response = await fetch(url, {
+        headers,
+      });
+
+      console.log('✅ [useChatMessages] Response status:', response.status);
+      console.log('✅ [useChatMessages] Response ok:', response.ok);
 
       if (response.ok) {
         const data = await response.json();
-        setMessages(data.messages || []);
+        console.log(
+          '📦 [useChatMessages] Raw data:',
+          JSON.stringify(data, null, 2),
+        );
+        console.log('📦 [useChatMessages] Data is array:', Array.isArray(data));
+        console.log(
+          '📦 [useChatMessages] Messages count:',
+          Array.isArray(data) ? data.length : 0,
+        );
+
+        // API trả về array trực tiếp, không phải {messages: []}
+        const messages = Array.isArray(data) ? data : [];
+
+        // Transform messages to match Message interface
+        const transformedMessages = messages.map((msg: any) => ({
+          role: msg.role,
+          content: msg.content,
+          timestamp: new Date(msg.created_at).toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+          itineraryData:
+            msg.itinerary_data ||
+            (msg.itinerary_data_json
+              ? JSON.parse(msg.itinerary_data_json)
+              : null),
+        }));
+
+        console.log(
+          '📦 [useChatMessages] Transformed messages count:',
+          transformedMessages.length,
+        );
+        setMessages(transformedMessages);
+      } else {
+        console.error('❌ [useChatMessages] Response not ok:', response.status);
+        const errorText = await response.text();
+        console.error('❌ [useChatMessages] Error response:', errorText);
       }
     } catch (error) {
-      console.error('Error loading messages:', error);
+      console.error('❌ [useChatMessages] Error loading messages:', error);
     }
   };
 
@@ -136,9 +180,18 @@ export function useChatMessages() {
   };
 
   const switchConversation = async (id: string, title: string) => {
+    console.log('🔄 [useChatMessages] Switching conversation to:', {
+      id,
+      title,
+    });
+    console.log(
+      '🔄 [useChatMessages] Current messages before switch:',
+      messages.length,
+    );
     setConversationId(id);
     setConversationTitle(title);
     await loadMessages(id);
+    console.log('🔄 [useChatMessages] Messages after switch:', messages.length);
   };
 
   return {
