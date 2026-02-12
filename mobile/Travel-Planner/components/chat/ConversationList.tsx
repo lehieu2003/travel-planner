@@ -37,10 +37,6 @@ export function ConversationList({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log(
-      '🔄 [ConversationList] useEffect triggered - visible:',
-      visible,
-    );
     if (visible) {
       loadConversations();
     }

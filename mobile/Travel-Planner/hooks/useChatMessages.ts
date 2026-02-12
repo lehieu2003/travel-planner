@@ -35,17 +35,7 @@ export function useChatMessages() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(
-          '📦 [useChatMessages] Raw data:',
-          JSON.stringify(data, null, 2),
-        );
-        console.log('📦 [useChatMessages] Data is array:', Array.isArray(data));
-        console.log(
-          '📦 [useChatMessages] Messages count:',
-          Array.isArray(data) ? data.length : 0,
-        );
 
-        // API trả về array trực tiếp, không phải {messages: []}
         const messages = Array.isArray(data) ? data : [];
 
         // Transform messages to match Message interface
@@ -63,10 +53,6 @@ export function useChatMessages() {
               : null),
         }));
 
-        console.log(
-          '📦 [useChatMessages] Transformed messages count:',
-          transformedMessages.length,
-        );
         setMessages(transformedMessages);
       } else {
         console.error('❌ [useChatMessages] Response not ok:', response.status);
@@ -180,18 +166,9 @@ export function useChatMessages() {
   };
 
   const switchConversation = async (id: string, title: string) => {
-    console.log('🔄 [useChatMessages] Switching conversation to:', {
-      id,
-      title,
-    });
-    console.log(
-      '🔄 [useChatMessages] Current messages before switch:',
-      messages.length,
-    );
     setConversationId(id);
     setConversationTitle(title);
     await loadMessages(id);
-    console.log('🔄 [useChatMessages] Messages after switch:', messages.length);
   };
 
   return {
