@@ -8,6 +8,7 @@ from app.api.routes_conversation import router as conversation_router
 from app.api.routes_chat import router as chat_router
 from app.api.routes_itinerary import router as itinerary_router
 from app.api.routes_profile import router as profile_router
+from app.api.routes_langgraph import router as langgraph_router
 
 from app.core.config_loader import settings
 
@@ -38,6 +39,7 @@ app.include_router(conversation_router)
 app.include_router(chat_router)
 app.include_router(itinerary_router)
 app.include_router(profile_router)
+app.include_router(langgraph_router)  # LangGraph routes
 
 
 # -------------------------------------------------------------
